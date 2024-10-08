@@ -1,0 +1,66 @@
+import {createRouter, createWebHashHistory} from 'vue-router'
+import NPProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+const router = createRouter({
+  history: createWebHashHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: '/',
+      name: 'default',
+      component: () => import('@/Layout/default.vue'),
+      children: [
+        {
+          path: '/home',
+          name: 'home',
+          meta: {
+            title: '原子低码'
+          },
+          component: () => import('@/views/Home/index.vue')
+        }
+      ]
+    },
+    {
+      path: '/atom',
+      name: 'atom',
+      meta: {
+        title: '原子低码'
+      },
+      component: () => import('@/views/Atom/index.vue'),
+      children: [
+        {
+          path: '',
+          name: '链接中心',
+            meta: {
+                title: '链接中心'
+            },
+          component: () => import('@/views/Atom/RoutePotal/index.vue')
+        },
+        {
+          path: '/atom/visualEditor',
+          name: 'visualEditor',
+          meta: {
+            title: '低代码引擎'
+          },
+          component: () => import('@/views/VisualEditor/index.vue')
+        }
+      ]
+    }
+  ]
+})
+
+
+// before each
+router.beforeEach((to) => {
+  if (to.meta.title) {
+    document.title = String(to.meta.title)
+  }
+  // 处理首页重定向
+  if (to.path === '/') return '/home'
+  NPProgress.start()
+})
+
+// after each
+router.afterEach(() => {
+  NPProgress.done()
+})
+export default router

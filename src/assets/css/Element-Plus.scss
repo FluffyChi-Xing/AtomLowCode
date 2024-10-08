@@ -1,0 +1,25 @@
+@mixin theme-color {
+  background: linear-gradient(40deg, theme('colors.theme') 5%, theme('colors.darkTheme'));
+}
+
+@mixin primary-btn {
+  color: theme('colors.white');
+  @include theme-color;
+  border: none !important;
+  outline: none !important;
+}
+
+@mixin dark-btn {
+  color: theme('colors.white');
+  background: theme('colors.darkTheme');
+  border: none !important;
+  outline: none !important;
+}
+
+.theme-btn {
+  @include primary-btn;
+}
+
+.dark-btn {
+  @include dark-btn;
+}
