@@ -12,4 +12,16 @@ export namespace VisualEditorTypes {
         label: string;
         value: string | null;
     }
+
+
+    /**
+     * @Date: 2022-10-12 21:29:32
+     * @description: 基础组件类型
+     * @param {label} 标签
+     * @param {index} 索引
+     */
+    export interface baseMaterialTypes {
+        label: string;
+        index: string;
+    }
 }

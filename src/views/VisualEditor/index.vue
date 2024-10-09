@@ -13,12 +13,6 @@ const canvasSize = ref<number>(1100)
 
 function changeSize(index: number) {
   canvasSize.value = index
-  if (index) {
-    $message({
-      type: "warning",
-      message: `尺寸变化了${index}`
-    })
-  }
 }
 /** ===== 画布尺寸调节-end ===== **/
 
@@ -37,6 +31,7 @@ function initChoice(index: string) {
   drawerChoice.value = index
   checkComponent(index)
   isExpand.value = true
+  console.log(index)
 }
 
 function checkComponent(index: string) {
@@ -46,6 +41,21 @@ function checkComponent(index: string) {
           placeholder.value = '请输入组件名称'
           currentComponent.value = MaterialPane
           break;
+    case 'tree':
+      title.value = '大纲树'
+          placeholder.value = '请输入节点名称'
+          currentComponent.value = ''
+          break;
+    case 'dataSource':
+      title.value = '数据源'
+          placeholder.value = '请输入数据源名称'
+          currentComponent.value = ''
+          break;
+    case 'schema':
+      title.value = 'Schema'
+          placeholder.value = '请输入Schema名称'
+          currentComponent.value = ''
+          break;
   }
 }
 
@@ -54,6 +64,7 @@ function closeDrawer() {
   isFixed.value = false
   fixedSize.value = '0px'
   fixedIcon.value = AddLocation
+  drawerChoice.value = '' // 关闭抽屉时清空当前选择
 }
 function fixedDrawer() {
   isFixed.value = !isFixed.value
@@ -97,9 +108,14 @@ watch(() => drawerChoice.value, (val) => {
       <!-- 编辑器画布 -->
       <div
           :style="`width: calc(100% - ${fixedSize})`"
-          class="h-full canvas p-4 flex"
+          class="h-full canvas p-4 flex justify-center"
       >
-        <div class="w-full h-full bg-canvas"></div>
+        <div
+            class="h-full bg-canvas"
+            :style="'width: ' + canvasSize + 'px'"
+        >
+
+        </div>
       </div>
       <!-- 数据绑定 -->
       <div class="w-[300px] fixed right-0 h-full flex">
@@ -109,8 +125,9 @@ watch(() => drawerChoice.value, (val) => {
     <!-- side drawer -->
     <el-drawer
         v-model="isExpand"
-        style="width: 300px;height: calc(100% - 50px);margin-top: 50px"
+        style="height: calc(100% - 50px);margin-top: 50px"
         direction="ltr"
+        size="350px"
         :close-on-click-modal="isFixed"
         :modal="false"
         @close="closeDrawer"
@@ -156,5 +173,9 @@ watch(() => drawerChoice.value, (val) => {
 
 :deep(.el-drawer) {
   padding-left: 48px !important;
+}
+
+:deep(.el-drawer__header) {
+  margin-bottom: 0 !important;
 }
 </style>
