@@ -27,7 +27,7 @@ function cloneDog(comp: any) {
 
 <template>
   <DraggableTansitionGroup
-      v-model="tempList"
+      :list="tempList"
       :group="{ name: 'people', pull: 'clone', put: false}"
       item-key="id"
       class="w-full h-full grid grid-cols-3 gap-1 px-4"

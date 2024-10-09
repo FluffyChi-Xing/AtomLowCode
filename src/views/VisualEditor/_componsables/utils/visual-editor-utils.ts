@@ -1,5 +1,9 @@
 import type {CSSProperties} from "vue";
 
+
+/**
+ * @description 组件属性
+ */
 export type VisualEditorBlockTypes = {
     /** 组件id 时间戳, 组件唯一标识 */
     _vid: string;
@@ -34,4 +38,63 @@ export type VisualEditorBlockTypes = {
     /** 组件事件集合 */
     events: { label: string; value: string }[];
     [prop: string]: any;
+}
+
+
+/**
+ * @description 组件配置中心
+ */
+export function createVisualEditorConfig() {
+    const componentMap: Record<string, VisualEditorBlockTypes> = {}; // 组件映射表
+    const componentModules: ComponentModules = {
+        baseComponents: [],
+        blockComponents: [],
+        businessComponent: [],
+        chartComponents: [],
+        formComponents: [],
+        layoutComponents: [],
+    }
+    return {
+        componentModules,
+        componentMap,
+        registry: <
+            _, // 组件属性
+            Props extends Record<string, VisualEditorBlockTypes> = {}, // 属性
+            Model extends Record<string, string> = {}, // 模块
+            >(
+                moduleName: keyof ComponentModules, // 模块名称
+                key: string, // 组件key
+                component: {
+                    label: string; // 组件名称
+                    preview: () => JSX.Element; // 组件预览
+                    render: (data: {
+                        props: { [k in keyof  Props]: any }; // 属性
+                        model: Partial<{ [k in keyof Model]: any }>; // 模块
+                        styles: CSSProperties; // 样式
+                        block: VisualEditorBlockTypes; // 组件
+                        custom: Record<string, any>; // 自定义
+                    }) => JSX.Element; // 组件渲染
+                    props?: Props; // 属性
+                    model?: Model; // 模块
+                    styles?: CSSProperties; // 样式
+                }
+        ) => {
+            const comp = { ...component, key, moduleName };
+            componentModules[moduleName].push(comp);
+            componentMap[key] = comp;
+        }
+    }
+}
+
+
+/**
+ * @description 组件模块定义
+ */
+export type ComponentModules = {
+    baseComponents: VisualEditorBlockTypes[]; // 基础组件
+    blockComponents: VisualEditorBlockTypes[]; // 区块组件
+    businessComponents: VisualEditorBlockTypes[]; // 业务组件
+    chartComponents: VisualEditorBlockTypes[]; // 图表组件
+    layoutComponents: VisualEditorBlockTypes[]; // 布局组件
+    formComponents: VisualEditorBlockTypes[]; // 表单组件
 }

@@ -2,7 +2,7 @@
 import {ref, watch} from 'vue'
 import ActionPane from "@/views/VisualEditor/_components/ActionPane.vue";
 import SideActionPane from "@/views/VisualEditor/_components/SideActionPane.vue";
-import {$message} from "@/componsabels/Element-Plus";
+import Simulator from './_components/simulator/index.vue'
 import {AddLocation, DeleteLocation} from "@element-plus/icons-vue";
 import DataBindPane from "@/views/VisualEditor/_components/DataBindPane.vue";
 import MaterialPane from '@/views/VisualEditor/_components/MaterialPane/index.vue'
@@ -114,7 +114,7 @@ watch(() => drawerChoice.value, (val) => {
             class="h-full bg-canvas"
             :style="'width: ' + canvasSize + 'px'"
         >
-
+          <Simulator />
         </div>
       </div>
       <!-- 数据绑定 -->
