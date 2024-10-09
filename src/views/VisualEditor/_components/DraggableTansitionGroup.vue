@@ -50,6 +50,7 @@ const dragOptions = computed(() => {
       :class="{ isDrag }"
       :group="group"
       :item-key="itemKey"
+      ghostClass="ghost"
       :component-data="{
           tag: 'ul',
           type: 'transition-group',

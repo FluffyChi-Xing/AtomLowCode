@@ -3,6 +3,7 @@ import {computed, ref} from 'vue'
 import { cloneDeep } from 'lodash-es';
 import DraggableTansitionGroup from "@/views/VisualEditor/_components/DraggableTansitionGroup.vue";
 import DraggableItem from "@/views/VisualEditor/_components/DraggableItem.vue";
+import {createNewBlock} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
 const tempList = ref<any[]>([
   {people: 'cn', id:1, name: '组件A'},
   {people: 'cn', id: 2, name: '组件B'},
@@ -14,10 +15,6 @@ const rows = computed(() => {
   return tempList.value.length % 3 === 0 ? 'grid-rows-3' : 'grid-rows-4'
 })
 
-function createNewBlock(comp: any) {
-  console.log(comp)
-}
-
 function cloneDog(comp: any) {
   console.log('当前拖动的组件是:', comp)
   const newComp = cloneDeep(comp);
@@ -27,7 +24,7 @@ function cloneDog(comp: any) {
 
 <template>
   <DraggableTansitionGroup
-      :list="tempList"
+      v-model="tempList"
       :group="{ name: 'people', pull: 'clone', put: false}"
       item-key="id"
       class="w-full h-full grid grid-cols-3 gap-1 px-4"

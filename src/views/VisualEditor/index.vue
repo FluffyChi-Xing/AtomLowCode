@@ -130,6 +130,7 @@ watch(() => drawerChoice.value, (val) => {
         size="350px"
         :close-on-click-modal="isFixed"
         :modal="false"
+        :modal-class="['mask-layer']"
         @close="closeDrawer"
     >
       <template #header>
@@ -177,5 +178,9 @@ watch(() => drawerChoice.value, (val) => {
 
 :deep(.el-drawer__header) {
   margin-bottom: 0 !important;
+}
+
+:deep(.mask-layer) {
+  width: 348px !important;
 }
 </style>

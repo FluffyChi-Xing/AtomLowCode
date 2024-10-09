@@ -13,7 +13,7 @@ withDefaults(defineProps<{
 <template>
   <div
       :key="index"
-      class="w-full h-full max-h-[100px] flex-col p-4 select-none text-[10px] justify-center items-center rounded-[2px] component-item flex"
+      class="w-full h-full max-h-[100px] bg-white flex-col p-4 select-none text-[10px] justify-center items-center rounded-[2px] component-item flex"
   >
     <!-- icon -->
     <div
