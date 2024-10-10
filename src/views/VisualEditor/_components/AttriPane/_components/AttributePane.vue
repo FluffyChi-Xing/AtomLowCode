@@ -7,7 +7,7 @@ const props = withDefaults(defineProps<{
 })
 
 const componentContent = ref<string>(props.data?.label)
-const componentType = ref<string>(props.data?.props?.type.defaultValue)
+const componentType = ref<string>(props.data?.props?.type?.defaultValue)
 function clearContent() {
   componentContent.value = ''
 }

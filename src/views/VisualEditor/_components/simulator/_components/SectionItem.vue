@@ -73,17 +73,18 @@ watch(() => tempList.value, () => {
           :group="{ name: 'components', pull: false, put: true}"
           item-key="key"
           animation="150"
-          class="w-full h-full grid grid-cols-3 gap-1 px-4 py-5"
+          class="w-full h-full grid grid-rows-1 gap-1 p-4"
           :class="drag"
       >
         <template #item="{ element, index }">
           <transition-group>
             <div
                 :key="index"
-                class="w-auto h-auto flex relative"
+                class="w-full h-full flex relative"
                 @click="handleFocusComp(index)"
             >
               <component
+                  class="w-full h-full flex"
                   :is="element?.preview()"
               />
               <!-- 删除组件 -->
