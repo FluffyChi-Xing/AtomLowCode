@@ -1,21 +1,16 @@
-import {ElButton} from "element-plus";
 import {useGlobalProperties} from "@/views/VisualEditor/_componsables/hooks/useGlobalProperties";
 
-
-
-
 export default {
-    key: 'button',
+    key: 'title',
     moduleName: 'basePackages',
-    label: '按钮',
-    icon: 'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
-    preview: () => <ElButton type={'primary'}>按钮</ElButton>,
+    label: '标题',
+    preview: () => <h1>标题</h1>,
     render: ({ props, block, styles}) => {
         const { registerRef } = useGlobalProperties();
 
         return () => (
             <div style={styles}>
-                <ElButton ref={(el) => registerRef(el, block._vid)} {...props}></ElButton>
+                <h1 ref={(el) => registerRef(el, block._vid)} {...props}></h1>
             </div>
         );
     },

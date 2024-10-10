@@ -3,6 +3,7 @@ import {ref} from 'vue';
 import SectionItem from "@/views/VisualEditor/_components/simulator/_components/SectionItem.vue";
 import type {SectionTypes} from "@/views/VisualEditor/_componsables/api/sectionTypes";
 import {$notify} from "@/componsabels/Element-Plus";
+import type {VisualEditorBlockTypes} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
 
 
 defineOptions({
@@ -24,7 +25,7 @@ const sectionList = ref<SectionTypes.pageSection[]>([
     isShow: false
   }
 ])
-const tempList = ref<any[]>([])
+const tempList = ref<VisualEditorBlockTypes[]>([])
 const drag = ref<boolean>(false)
 
 // 选择要操作的组件
@@ -56,8 +57,10 @@ function handleCreateSection() {
  * @param index
  */
 function handleFocus(index: string) {
-  // 清除模拟器容器的is active
-  simulator.value.classList.remove('is-active')
+  // 清除所有sectionItem的聚焦状态
+  sectionList.value.forEach((item: SectionTypes.pageSection) => {
+    item.isShow = false
+  })
   // 再根据index来判断是否聚焦当前的sectionItem
   sectionList.value.find((item: SectionTypes.pageSection) => {
     if (item.label === index) {

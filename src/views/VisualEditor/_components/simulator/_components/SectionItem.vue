@@ -16,6 +16,7 @@ const props = withDefaults(defineProps<{
 
 
 const section = ref() // 获取容器
+const isDrag = ref<boolean>(props.drag)
 const emits = defineEmits(['createSection', 'focusSection', 'deleteSection'])
 const tempList = ref<any[]>(props.list)
 const text = computed(() => {
@@ -53,17 +54,18 @@ watch(() => tempList.value, () => {
     <el-scrollbar class="w-full h-full relative">
       <DraggableTansitionGroup
           v-model="tempList"
-          :group="{ name: 'people', pull: true, put: true}"
-          item-key="id"
+          v-model:drag="isDrag"
+          :group="{ name: 'components', pull: 'clone', put: true}"
+          item-key="key"
           animation="150"
           class="w-full h-full grid grid-cols-3 gap-1 p-4"
           :class="drag"
       >
         <template #item="{ element, index }">
           <transition-group>
-            <DraggableItem
-                :element="element"
-                :index="index"
+            <component
+                :is="element?.preview()"
+                :key="index"
             />
           </transition-group>
         </template>

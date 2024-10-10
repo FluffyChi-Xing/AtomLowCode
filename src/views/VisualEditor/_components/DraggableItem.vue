@@ -23,7 +23,7 @@ withDefaults(defineProps<{
       <el-icon style="font-size: 20px"><component :is="icon" /></el-icon>
     </div>
     <!-- label -->
-    <span class="w-full h-auto flex items-center  justify-center whitespace-pre-line text-ellipsis">{{ element?.name }}</span>
+    <span class="w-full h-auto flex items-center  justify-center whitespace-pre-line text-ellipsis">{{ element?.key }}</span>
   </div>
 </template>
 

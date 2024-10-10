@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, ref} from 'vue';
+import {computed} from 'vue';
 import draggable from 'vuedraggable';
 import {useVModel} from "@vueuse/core";
 defineOptions({
@@ -50,13 +50,14 @@ const dragOptions = computed(() => {
       :class="{ isDrag }"
       :group="group"
       :item-key="itemKey"
-      ghostClass="ghost"
       :component-data="{
           tag: 'ul',
           type: 'transition-group',
           name: !isDrag ? 'flip-list' : null,
         }"
       v-bind="{...dragOptions, ...$attrs}"
+      @start="isDrag = true"
+      @end="isDrag = false"
   >
     <template #item="item">
       <div
