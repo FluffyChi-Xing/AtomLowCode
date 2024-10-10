@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import {computed, ref} from 'vue';
-import DraggableTansitionGroup from "@/views/VisualEditor/_components/DraggableTansitionGroup.vue";
-import DraggableItem from "@/views/VisualEditor/_components/DraggableItem.vue";
+import {ref} from 'vue';
+import SectionItem from "@/views/VisualEditor/_components/simulator/_components/SectionItem.vue";
+import type {SectionTypes} from "@/views/VisualEditor/_componsables/api/sectionTypes";
+import {$notify} from "@/componsabels/Element-Plus";
 
 
 defineOptions({
   name: 'SimulatorEditor',
 });
 
-
+const simulator = ref() // 获取模拟器容器
 const list1 = [
   {people: 'cn', id:1, name: '组件A'},
   {people: 'cn', id: 2, name: '组件B'},
@@ -16,15 +17,15 @@ const list1 = [
   {people: 'us', id: 4, name: '组件D'},
 ]
 
+const sectionList = ref<SectionTypes.pageSection[]>([
+  {
+    index: 1,
+    label: 'section1',
+    isShow: false
+  }
+])
 const tempList = ref<any[]>([])
 const drag = ref<boolean>(false)
-const rows = computed(() => {
-  if (tempList.value?.length) {
-    return tempList.value?.length % 3 === 0 ? 'grid-rows-3' : 'grid-rows-4'
-  } else {
-    return '';
-  }
-})
 
 // 选择要操作的组件
 // const selectComp = (element: VisualEditorBlockTypes) => {
@@ -37,79 +38,75 @@ const rows = computed(() => {
 //   });
 // };
 
-function onAdd(item: any) {
-  console.log('添加了:', item)
+
+/**
+ * 处理添加页面端函数
+ */
+function handleCreateSection() {
+  // 向容器内添加一个新的sectionItem组件
+  const base = sectionList.value.length
+  sectionList.value.push({
+    index: base + 1,
+    label: `section${base + 1}`
+  })
+}
+
+/**
+ * 处理聚焦事件
+ * @param index
+ */
+function handleFocus(index: string) {
+  // 清除模拟器容器的is active
+  simulator.value.classList.remove('is-active')
+  // 再根据index来判断是否聚焦当前的sectionItem
+  sectionList.value.find((item: SectionTypes.pageSection) => {
+    if (item.label === index) {
+      item.isShow = !item.isShow
+    }
+  })
+}
+
+function handleDelete(index: string) {
+  if (sectionList.value.length > 1) {
+    sectionList.value.find((item: SectionTypes.pageSection) => {
+      if (item.label === index) {
+        sectionList.value.splice(sectionList.value.indexOf(item), 1)
+      }
+    })
+  } else {
+    $notify({
+      type: "warning",
+      title: "警告",
+      message: "至少保留一个section",
+      offset: 80
+    })
+  }
 }
 </script>
 
 <template>
-  <div class="w-full h-full flex">
-<!--    <DraggableTansitionGroup-->
-<!--        v-model:drag="drag"-->
-<!--        class="!min-h-680px"-->
-<!--        draggable=".item-drag"-->
-<!--    >-->
-<!--      <template #item="{ element: outElement }">-->
-<!--        <div-->
-<!--            class="w-full h-auto flex flex-col"-->
-<!--            :data-label="outElement?.label"-->
-<!--            :class="{-->
-<!--              focus: outElement?.focus,-->
-<!--              focusWithChild: outElement?.focusWithChild,-->
-<!--              drag,-->
-<!--              ['has-slot']: !!Object.keys(outElement?.props.slots || {}).length,-->
-<!--            }"-->
-<!--        >-->
-<!--          <component-render-->
-<!--              :key="outElement?._vid"-->
-<!--              :element="outElement"-->
-<!--              :style="{-->
-<!--                pointerEvents: Object.keys(outElement?.props?.slots || {}).length-->
-<!--                  ? 'auto'-->
-<!--                  : 'none',-->
-<!--              }"-->
-<!--          >-->
-<!--            <template-->
-<!--                v-for="(item, slotKey) in outElement?.props?.slots"-->
-<!--                :key="slotKey"-->
-<!--                #[slotKey]-->
-<!--            >-->
-<!--              <SlotItem-->
-<!--                  v-model:children="item.children"-->
-<!--                  v-model:drag="drag"-->
-<!--                  :slot-key="slotKey"-->
-<!--                  :on-contextmenu-block="null"-->
-<!--                  :select-comp="null"-->
-<!--              />-->
-<!--            </template>-->
-<!--          </component-render>-->
-<!--        </div>-->
-<!--      </template>-->
-<!--    </DraggableTansitionGroup>-->
-    <el-scrollbar class="w-full h-full">
-      <DraggableTansitionGroup
-          v-model="tempList"
-          :group="{ name: 'people', pull: true, put: true}"
-          item-key="id"
-          animation="150"
-          class="w-full h-full grid grid-cols-3 gap-1 p-4"
-          :class="[rows]"
-          @add="onAdd"
-      >
-        <template #item="{ element, index }">
-          <transition-group>
-            <DraggableItem
-                :element="element"
-                :index="index"
-            />
-          </transition-group>
-        </template>
-      </DraggableTansitionGroup>
+  <div
+      ref="simulator"
+      class="w-full h-full simulator flex"
+  >
+    <el-scrollbar ref="container" class="w-full h-full">
+      <SectionItem
+          v-for="(item, index) in sectionList"
+          :key="index"
+          :label="item.label"
+          :list="tempList"
+          :drag="drag"
+          :is-show="item.isShow"
+          @create-section="handleCreateSection"
+          @focus-section="handleFocus"
+          @delete-section="handleDelete"
+      />
     </el-scrollbar>
   </div>
 </template>
 
 <style scoped>
+@import "style/simulator.scss";
 :deep(.el-scrollbar__view) {
   width: 100%;
   height: 100%;

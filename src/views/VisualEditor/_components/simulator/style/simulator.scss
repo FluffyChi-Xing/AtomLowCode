@@ -1,0 +1,25 @@
+.section-item {
+  border: 1px dashed theme('colors.darkTheme');
+  box-sizing: border-box;
+}
+
+.section-item:hover {
+  border-color: #409eff;
+}
+
+:deep(.el-divider__text) {
+  padding: 0 !important;
+}
+
+.section-item {
+  &.is-active {
+    border-color: #409eff;
+  }
+}
+
+.simulator {
+  border: 1px dashed transparent;
+  &.is-active {
+    border-color: #409eff;
+  }
+}
