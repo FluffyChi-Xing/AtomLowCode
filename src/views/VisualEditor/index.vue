@@ -4,8 +4,9 @@ import ActionPane from "@/views/VisualEditor/_components/ActionPane.vue";
 import SideActionPane from "@/views/VisualEditor/_components/SideActionPane.vue";
 import Simulator from './_components/simulator/index.vue'
 import {AddLocation, DeleteLocation} from "@element-plus/icons-vue";
-import DataBindPane from "@/views/VisualEditor/_components/DataBindPane.vue";
+import DataBindPane from "@/views/VisualEditor/_components/AttriPane/DataBindPane.vue";
 import MaterialPane from '@/views/VisualEditor/_components/MaterialPane/index.vue'
+import type {VisualEditorComponent} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
 
 
 /** ===== 画布尺寸调节-start ===== **/
@@ -26,6 +27,8 @@ const searchValue = ref<string>('')
 const title = ref<string>('大纲树')
 const placeholder = ref<string>('请输入节点名称')
 const currentComponent = ref<any>(null)
+const currentNode = ref<VisualEditorComponent>(null)
+const currentSection = ref<string>('')
 
 function initChoice(index: string) {
   drawerChoice.value = index
@@ -76,6 +79,15 @@ function fixedDrawer() {
     fixedSize.value = '0px'
   }
 }
+function checkCurrentNode(index: VisualEditorComponent) {
+  currentNode.value = index
+}
+
+function getCurrentSec(index: string) {
+  currentSection.value = index
+}
+
+
 watch(() => drawerChoice.value, (val) => {
   isExpand.value = true
 })
@@ -83,7 +95,7 @@ watch(() => drawerChoice.value, (val) => {
 </script>
 
 <template>
-  <div class="w-screen h-screen flex flex-col bg-backgroundGray">
+  <div class="w-screen h-screen flex flex-col bg-[#EDEFF3]">
     <!-- 顶部导航条 -->
     <div class="w-full h-12 flex bg-red-500 mb-0.5">
       <ActionPane
@@ -114,12 +126,18 @@ watch(() => drawerChoice.value, (val) => {
             class="h-full bg-canvas"
             :style="'width: ' + canvasSize + 'px'"
         >
-          <Simulator />
+          <Simulator
+              @focus-comp="checkCurrentNode"
+              @currentSec="getCurrentSec"
+          />
         </div>
       </div>
       <!-- 数据绑定 -->
       <div class="w-[300px] fixed right-0 h-full flex">
-        <DataBindPane />
+        <DataBindPane
+            :current-node="currentNode"
+            :current-sec="currentSection"
+        />
       </div>
     </div>
     <!-- side drawer -->

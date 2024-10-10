@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import {computed, ref, watch} from 'vue';
 import DraggableTansitionGroup from "@/views/VisualEditor/_components/DraggableTansitionGroup.vue";
-import type {
-  VisualEditorComponent
-} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
 
 
 const props = withDefaults(defineProps<{
@@ -18,7 +15,7 @@ const props = withDefaults(defineProps<{
 
 const section = ref() // 获取容器
 const isDrag = ref<boolean>(props.drag)
-const emits = defineEmits(['createSection', 'focusSection', 'deleteSection'])
+const emits = defineEmits(['createSection', 'focusSection', 'deleteSection', 'focusComp', 'currentSec'])
 const tempList = ref<any[]>(props.list)
 const text = computed(() => {
   if (!tempList.value?.length) {
@@ -43,6 +40,8 @@ function handleDelete() {
 function handleFocusComp(index: number) {
   tempList.value = tempList.value.map((item, i) => {
     if (i === index) {
+      emits('focusComp', item) // 当前选中的组件
+      emits('currentSec', props.label) // 当前组件所在的section
       return { ...item, focus: true };
     } else {
       return { ...item, focus: false };
@@ -64,17 +63,17 @@ watch(() => tempList.value, () => {
   <div
       @click="handleFocus"
       ref="section"
-      class="w-full h-auto min-h-8 flex section-item items-center my-2"
+      class="w-full h-auto min-h-8 flex section-item items-center bg-white my-2"
       :class="isShow ? 'is-active' : ''"
   >
-    <el-scrollbar class="w-full h-full relative">
+    <el-scrollbar class="w-full h-full flex flex-col relative">
       <DraggableTansitionGroup
           v-model="tempList"
           v-model:drag="isDrag"
           :group="{ name: 'components', pull: false, put: true}"
           item-key="key"
           animation="150"
-          class="w-full h-full grid grid-cols-3 gap-1 p-4"
+          class="w-full h-full grid grid-cols-3 gap-1 px-4 py-5"
           :class="drag"
       >
         <template #item="{ element, index }">
@@ -90,10 +89,15 @@ watch(() => tempList.value, () => {
               <!-- 删除组件 -->
               <div
                   v-if="element?.focus"
-                  class="absolute w-8 text-[10px] justify-center hover:text-red-500 cursor-pointer items-center h-4 flex left-0 top-[-17px]"
-                  @click="handleDeleteComp(index)"
+                  class="absolute rounded-[3px] w-auto text-[10px] justify-center bg-[#006CFF] z-[299] text-white cursor-pointer items-center h-4 flex left-0 top-[-16px]"
               >
-                删除
+                <span @click="handleDeleteComp(index)">删除</span>
+              </div>
+              <div
+                  v-if="element?.focus"
+                  class="absolute rounded-[3px] mr-2 w-auto text-[10px] justify-center bg-[#006CFF] z-[299] text-white cursor-pointer items-center h-4 flex left-[25px] top-[-16px]"
+              >
+                <span>{{ element?.key }}</span>
               </div>
             </div>
           </transition-group>

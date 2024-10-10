@@ -3,7 +3,10 @@ import {ref} from 'vue';
 import SectionItem from "@/views/VisualEditor/_components/simulator/_components/SectionItem.vue";
 import type {SectionTypes} from "@/views/VisualEditor/_componsables/api/sectionTypes";
 import {$notify} from "@/componsabels/Element-Plus";
-import type {VisualEditorBlockTypes} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
+import type {
+  VisualEditorBlockTypes,
+  VisualEditorComponent
+} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
 
 
 defineOptions({
@@ -27,6 +30,7 @@ const sectionList = ref<SectionTypes.pageSection[]>([
 ])
 const tempList = ref<VisualEditorBlockTypes[]>([])
 const drag = ref<boolean>(false)
+const emits = defineEmits(['focusComp', 'currentSec'])
 
 // 选择要操作的组件
 // const selectComp = (element: VisualEditorBlockTypes) => {
@@ -85,6 +89,14 @@ function handleDelete(index: string) {
     })
   }
 }
+
+function handleFocusComp(comp: VisualEditorComponent) {
+  emits('focusComp', comp)
+}
+
+function getSection(index: string) {
+  emits('currentSec', index)
+}
 </script>
 
 <template>
@@ -103,6 +115,8 @@ function handleDelete(index: string) {
           @create-section="handleCreateSection"
           @focus-section="handleFocus"
           @delete-section="handleDelete"
+          @focus-comp="handleFocusComp"
+          @currentSec="getSection"
       />
     </el-scrollbar>
   </div>

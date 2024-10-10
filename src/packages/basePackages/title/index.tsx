@@ -1,4 +1,5 @@
 import {useGlobalProperties} from "@/views/VisualEditor/_componsables/hooks/useGlobalProperties";
+import {VisualEditorComponent} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
 
 export default {
     key: 'title',
@@ -24,4 +25,4 @@ export default {
     props: {
 
     }
-}
+} as VisualEditorComponent
