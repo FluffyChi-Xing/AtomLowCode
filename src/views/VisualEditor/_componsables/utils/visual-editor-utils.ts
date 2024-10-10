@@ -74,6 +74,8 @@ export type VisualEditorComponent = {
     events?: { label: string; value: string }[];
     /** 组件样式 */
     styles?: CSSProperties;
+    /** 是否聚焦 */
+    focus?: boolean;
 };
 
 

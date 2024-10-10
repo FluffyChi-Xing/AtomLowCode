@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import {computed, ref, watch} from 'vue';
 import DraggableTansitionGroup from "@/views/VisualEditor/_components/DraggableTansitionGroup.vue";
-import DraggableItem from "@/views/VisualEditor/_components/DraggableItem.vue";
-import ComponentRender from "@/views/VisualEditor/_componsables/render/component-render";
+import type {
+  VisualEditorComponent
+} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
 
 
 const props = withDefaults(defineProps<{
@@ -39,6 +40,21 @@ function handleDelete() {
   emits('deleteSection', props.label)
 }
 
+function handleFocusComp(index: number) {
+  tempList.value = tempList.value.map((item, i) => {
+    if (i === index) {
+      return { ...item, focus: true };
+    } else {
+      return { ...item, focus: false };
+    }
+  });
+}
+
+function handleDeleteComp(index: number) {
+  console.log('删除了', tempList.value[index].key)
+  tempList.value.splice(index, 1);
+}
+
 watch(() => tempList.value, () => {
   console.log(`${props.label}tempList:`, tempList.value)
 })
@@ -55,7 +71,7 @@ watch(() => tempList.value, () => {
       <DraggableTansitionGroup
           v-model="tempList"
           v-model:drag="isDrag"
-          :group="{ name: 'components', pull: 'clone', put: true}"
+          :group="{ name: 'components', pull: false, put: true}"
           item-key="key"
           animation="150"
           class="w-full h-full grid grid-cols-3 gap-1 p-4"
@@ -63,15 +79,33 @@ watch(() => tempList.value, () => {
       >
         <template #item="{ element, index }">
           <transition-group>
-            <component
-                :is="element?.preview()"
+            <div
                 :key="index"
-            />
+                class="w-auto h-auto flex relative"
+                @click="handleFocusComp(index)"
+            >
+              <component
+                  :is="element?.preview()"
+              />
+              <!-- 删除组件 -->
+              <div
+                  v-if="element?.focus"
+                  class="absolute w-8 text-[10px] justify-center hover:text-red-500 cursor-pointer items-center h-4 flex left-0 top-[-17px]"
+                  @click="handleDeleteComp(index)"
+              >
+                删除
+              </div>
+            </div>
           </transition-group>
         </template>
       </DraggableTansitionGroup>
       <!-- tooltip -->
-      <span class="text-gray-500 w-full absolute h-8 justify-center top-0 items-center flex">{{ text }}</span>
+      <span
+          v-if="text"
+          class="text-gray-500 w-full absolute h-8 justify-center top-0 items-center flex"
+      >
+        {{ text }}
+      </span>
     </el-scrollbar>
   </div>
   <!-- 选中 section 后的工具栏 -->
