@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {computed, ref, watch} from 'vue';
 import DraggableTansitionGroup from "@/views/VisualEditor/_components/DraggableTansitionGroup.vue";
+import type {VisualEditorBlockTypes} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
+import {SectionTypes} from "@/views/VisualEditor/_componsables/api/sectionTypes";
 
 
 const props = withDefaults(defineProps<{
@@ -15,7 +17,7 @@ const props = withDefaults(defineProps<{
 
 const section = ref() // 获取容器
 const isDrag = ref<boolean>(props.drag)
-const emits = defineEmits(['createSection', 'focusSection', 'deleteSection', 'focusComp', 'currentSec'])
+const emits = defineEmits(['createSection', 'focusSection', 'deleteSection', 'focusComp', 'currentSec', 'createComp'])
 const tempList = ref<any[]>(props.list)
 const text = computed(() => {
   if (!tempList.value?.length) {
@@ -55,8 +57,16 @@ function handleDeleteComp(index: number) {
   tempList.value.splice(index, 1);
 }
 
+function handleCreateComp(comp: SectionTypes.createComp, label: string) {
+  emits('createComp', {
+    comp: comp,
+    sectionLabel: label
+  })
+}
+
 watch(() => tempList.value, () => {
-  console.log(`${props.label}tempList:`, tempList.value)
+  // 数组最后一位为新建组件
+  handleCreateComp(tempList.value[tempList.value.length - 1], props.label)
 })
 </script>
 

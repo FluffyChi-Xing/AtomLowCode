@@ -4,7 +4,6 @@ import SectionItem from "@/views/VisualEditor/_components/simulator/_components/
 import type {SectionTypes} from "@/views/VisualEditor/_componsables/api/sectionTypes";
 import {$notify} from "@/componsabels/Element-Plus";
 import type {
-  VisualEditorBlockTypes,
   VisualEditorComponent
 } from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
 
@@ -19,10 +18,10 @@ const sectionList = ref<SectionTypes.pageSection[]>([
   {
     index: 1,
     label: 'section1',
-    isShow: false
+    isShow: false,
+    component: []
   }
 ])
-const tempList = ref<VisualEditorBlockTypes[]>([])
 const drag = ref<boolean>(false)
 const emits = defineEmits(['focusComp', 'currentSec'])
 
@@ -35,8 +34,11 @@ function handleCreateSection() {
   const base = sectionList.value.length
   sectionList.value.push({
     index: base + 1,
-    label: `section${base + 1}`
+    label: `section${base + 1}`,
+    isShow: false,
+    component: []
   })
+  console.log('add section list:', sectionList.value)
 }
 
 /**
@@ -80,6 +82,14 @@ function handleFocusComp(comp: VisualEditorComponent) {
 function getSection(index: string) {
   emits('currentSec', index)
 }
+
+function createComponent(item: SectionTypes.createComp) {
+  sectionList.value.find((some: SectionTypes.pageSection) => {
+    if (item.sectionLabel === some.label) {
+      some.component.push(item.comp)
+    }
+  })
+}
 </script>
 
 <template>
@@ -92,7 +102,7 @@ function getSection(index: string) {
           v-for="(item, index) in sectionList"
           :key="index"
           :label="item.label"
-          :list="tempList"
+          :list="sectionList[index]?.component"
           :drag="drag"
           :is-show="item.isShow"
           @create-section="handleCreateSection"
@@ -100,6 +110,7 @@ function getSection(index: string) {
           @delete-section="handleDelete"
           @focus-comp="handleFocusComp"
           @currentSec="getSection"
+          @create-comp="createComponent"
       />
     </el-scrollbar>
   </div>
