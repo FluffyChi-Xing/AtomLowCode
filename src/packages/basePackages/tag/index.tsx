@@ -7,7 +7,7 @@ export default {
     key: 'tag',
     moduleName: 'basePackages',
     label: '标签',
-    preview: () => <ElTag typa={'primary'}>标签</ElTag>,
+    preview: () => <ElTag type={'primary'}>标签</ElTag>,
     render: ({ props, block, styles }) => {
         const { registerRef } = useGlobalProperties();
 

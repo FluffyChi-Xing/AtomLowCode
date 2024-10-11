@@ -42,6 +42,32 @@ const router = createRouter({
             title: '低代码引擎'
           },
           component: () => import('@/views/VisualEditor/index.vue')
+        },
+        {
+          path: '/atom/materialCreate',
+          name: 'materialCreate',
+          meta: {
+            title: '鸿蒙造物'
+          },
+          component: () => import('@/views/MaterialCreatement/index.vue'),
+          children: [
+            {
+              path: '',
+              name: 'materialCenter',
+              meta: {
+                title: '物料中心'
+              },
+              component: () => import('@/views/MaterialCreatement/_components/MaterialCenter.vue')
+            },
+            {
+              path: '/atom/materialCreate/workspace:name&:label',
+              name: 'workspace',
+              meta: {
+                title: '工作台'
+              },
+              component: () => import('@/views/MaterialCreatement/WorkSpace.vue')
+            }
+          ]
         }
       ]
     }

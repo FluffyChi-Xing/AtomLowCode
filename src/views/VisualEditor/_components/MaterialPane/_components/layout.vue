@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BaseComponent from '../BaseComponent/index.vue'
+import LayoutComponent from '../LayoutComponent/index.vue'
 const props = withDefaults(defineProps<{
   componentName?: string;
 }>(), {
@@ -24,7 +25,7 @@ function checkComponent(index: string) {
     case 'business':
       return componentTypes[index]
     case 'layout':
-      return componentTypes[index]
+      return LayoutComponent
     case 'form':
       return componentTypes[index]
     case 'block':

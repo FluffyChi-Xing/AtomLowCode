@@ -7,6 +7,10 @@ const router = useRouter()
 function jump2engine() {
   router.push('/atom/visualEditor')
 }
+
+function jump2material() {
+  router.push('/atom/materialCreate')
+}
 </script>
 
 <template>
@@ -28,7 +32,7 @@ function jump2engine() {
               class="w-full flex mt-auto"
           >
             <el-button @click="jump2engine" size="large" class="theme-btn mr-4">低代码引擎</el-button>
-            <el-button size="large" class="dark-btn">低代码物料</el-button>
+            <el-button @click="jump2material" size="large" class="dark-btn">低代码物料</el-button>
           </div>
         </div>
       </div>

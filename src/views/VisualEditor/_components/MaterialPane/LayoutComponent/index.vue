@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import {computed, ref} from 'vue'
-import { cloneDeep } from 'lodash-es';
-import DraggableTansitionGroup from "@/views/VisualEditor/_components/DraggableTansitionGroup.vue";
+import {computed, ref} from 'vue';
 import DraggableItem from "@/views/VisualEditor/_components/DraggableItem.vue";
+import DraggableTansitionGroup from "@/views/VisualEditor/_components/DraggableTansitionGroup.vue";
+import {cloneDeep} from "lodash-es";
 import {createNewBlock} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
 import {visualConfig} from "@/componsabels/visual-config";
 
-const baseComponents = ref(visualConfig.componentModules.baseComponents)
+
+const layoutComponent = ref(visualConfig.componentModules.layoutComponents);
 
 const rows = computed(() => {
-  return `grid-rows-${Math.ceil(baseComponents.value.length / 3) + 1}`
+  return `grid-rows-${Math.ceil(layoutComponent.value.length / 3) + 1}`;
 })
 
 function cloneDog(comp: any) {
@@ -25,11 +26,11 @@ function log(evt) {
 
 <template>
   <div
-      v-if="baseComponents?.length"
+      v-if="layoutComponent?.length"
       class="w-full h-full flex"
   >
     <DraggableTansitionGroup
-        v-model="baseComponents"
+        v-model="layoutComponent"
         :group="{ name: 'components', pull: 'clone', put: false}"
         item-key="key"
         class="w-full h-full grid grid-cols-3 gap-1 px-4"
@@ -46,7 +47,7 @@ function log(evt) {
   </div>
   <div
       v-else
-      class="w-full h-full flex justify-center items-center"
+      class="w-full h-ful justify-center items-center"
   >
     <el-empty
         description="暂无组件"
