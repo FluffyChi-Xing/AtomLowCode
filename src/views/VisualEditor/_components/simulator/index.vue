@@ -14,12 +14,6 @@ defineOptions({
 });
 
 const simulator = ref() // 获取模拟器容器
-const list1 = [
-  {people: 'cn', id:1, name: '组件A'},
-  {people: 'cn', id: 2, name: '组件B'},
-  {people: 'cn', id: 3, name: '组件C'},
-  {people: 'us', id: 4, name: '组件D'},
-]
 
 const sectionList = ref<SectionTypes.pageSection[]>([
   {
@@ -31,17 +25,6 @@ const sectionList = ref<SectionTypes.pageSection[]>([
 const tempList = ref<VisualEditorBlockTypes[]>([])
 const drag = ref<boolean>(false)
 const emits = defineEmits(['focusComp', 'currentSec'])
-
-// 选择要操作的组件
-// const selectComp = (element: VisualEditorBlockTypes) => {
-//   setCurrentBlock(element);
-//   currentPage.value.blocks.forEach((block) => {
-//     block.focus = element._vid == block._vid;
-//     block.focusWithChild = false;
-//     handleSlotsFocus(block, element._vid);
-//     element.focusWithChild = false;
-//   });
-// };
 
 
 /**
@@ -73,13 +56,13 @@ function handleFocus(index: string) {
   })
 }
 
-function handleDelete(index: string) {
+// TODO 删除 section 函数存在问题，待改进
+function handleDelete(label: string) {
   if (sectionList.value.length > 1) {
-    sectionList.value.find((item: SectionTypes.pageSection) => {
-      if (item.label === index) {
-        sectionList.value.splice(sectionList.value.indexOf(item), 1)
-      }
-    })
+    const index = sectionList.value.findIndex((item: SectionTypes.pageSection) => item.label === label);
+    if (index !== -1) {
+      sectionList.value.splice(index, 1);
+    }
   } else {
     $notify({
       type: "warning",

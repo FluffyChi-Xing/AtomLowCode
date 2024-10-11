@@ -27,7 +27,7 @@ const highLightTab = ref<string>('attribute')
 const currentPane = ref<any>(checkPane(highLightTab.value))
 const paneBindData = ref<any>({
   label: props.currentNode?.label,
-  props: props.currentNode?.props
+  props: props.currentNode?.props,
 })
 const attriTabList = ref<attributeTabTypes[]>([
   {
@@ -64,6 +64,10 @@ function checkPane(item: string) {
     case 'attribute':
       return AttributePane
   }
+}
+
+function handleTypeChange(index: string) {
+  console.log('type:', index)
 }
 
 watch(() => highLightTab.value, (val) => {
@@ -116,6 +120,7 @@ watch(() => props.currentNode, () => {
         <component
             :is="currentPane"
             :data="paneBindData"
+            @update:type="handleTypeChange"
         />
       </el-scrollbar>
     </div>

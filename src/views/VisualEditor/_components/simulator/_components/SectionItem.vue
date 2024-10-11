@@ -38,6 +38,7 @@ function handleDelete() {
 }
 
 function handleFocusComp(index: number) {
+  console.log('tempList:', tempList.value)
   tempList.value = tempList.value.map((item, i) => {
     if (i === index) {
       emits('focusComp', item) // 当前选中的组件

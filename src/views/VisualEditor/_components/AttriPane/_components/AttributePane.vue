@@ -8,6 +8,7 @@ const props = withDefaults(defineProps<{
 
 const componentContent = ref<string>(props.data?.label)
 const componentType = ref<string>(props.data?.props?.type?.defaultValue)
+const emits = defineEmits(['update:type'])
 function clearContent() {
   componentContent.value = ''
 }
@@ -16,6 +17,14 @@ function initData() {
   componentContent.value = props.data?.label
   componentType.value = props.data?.props?.type?.defaultValue
 }
+
+function changeType() {
+  emits('update:type', componentType.value)
+}
+
+watch(() => componentType.value, () => {
+  changeType()
+})
 
 onMounted(() => {
   console.log('data:', props.data?.props?.type)

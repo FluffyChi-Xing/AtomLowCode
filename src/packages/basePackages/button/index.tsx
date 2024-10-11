@@ -28,9 +28,12 @@ export default {
         width: true,
         height: true,
     },
-    events: {
-
-    },
+    events: [
+        {
+            label: '点击按钮，且按钮状态不为加载或禁用时触发',
+            value: 'click',
+        }
+    ],
     props: {
         text: createEditorInputProp({ label: '按钮文字', defaultValue: '按钮'}),
         type: createEditorSelectProp({

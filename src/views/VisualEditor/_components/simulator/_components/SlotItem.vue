@@ -24,20 +24,20 @@ const props = defineProps({
     type: Array as PropType<VisualEditorBlockTypes[]>,
     default: () => [],
   },
-  selectComp: {
-    type: Function as PropType<(comp: VisualEditorBlockTypes) => void>,
-    required: true,
-  },
-  onContextmenuBlock: {
-    type: Function as PropType<
-        (
-            e: MouseEvent,
-            block: VisualEditorBlockTypes,
-            parentBlocks?: VisualEditorBlockTypes[],
-        ) => void
-    >,
-    required: true,
-  },
+  // selectComp: {
+  //   type: Function as PropType<(comp: VisualEditorBlockTypes) => void>,
+  //   required: true,
+  // },
+  // onContextmenuBlock: {
+  //   type: Function as PropType<
+  //       (
+  //           e: MouseEvent,
+  //           block: VisualEditorBlockTypes,
+  //           parentBlocks?: VisualEditorBlockTypes[],
+  //       ) => void
+  //   >,
+  //   required: true,
+  // },
 });
 const emits = defineEmits(['update:children', 'on-selected', 'update:drag']);
 
@@ -47,9 +47,9 @@ const slotChildren = useVModel(props, 'children', emits);
 
 
 // 选中组件
-props.children?.some((item) => {
-  item.focus && props.selectComp(item);
-})
+// props.children?.some((item) => {
+//   item.focus && props.selectComp(item);
+// })
 </script>
 
 <template>
@@ -62,36 +62,26 @@ props.children?.some((item) => {
       :data-slot="`插槽(${ slotKey }) \n 拖拽组件到此处`"
   >
     <template #item="{ element: innerElement}">
-      <div
-          :data-label="innerElement?.label"
-          :class="{
-            focus: innerElement?.focus,
-            focusWithChild: innerElement?.focusWithChild,
-          }"
-      >
-        <ComponentRender
-            :element="innerElement"
-            :style="{
+      <ComponentRender
+          :element="innerElement"
+          :style="{
               pointerEvents: Object.keys(innerElement?.props?.slots || {}).length
                   ? 'auto'
                   : 'none',
             }"
+      >
+        <template
+            v-for="(item, index) in innerElement?.props?.slots"
+            :key="index"
+            #[index]
         >
-          <template
-              v-for="(item, index) in innerElement?.props?.slots"
-              :key="index"
-              #[index]
-          >
-            <SlotItem
-                v-model:children="item.children"
-                v-model:drag="isDrag"
-                :slot-key="index"
-                :on-contextmenu-block="onContextmenuBlock"
-                :select-comp="selectComp"
-            />
-          </template>
-        </ComponentRender>
-      </div>
+          <SlotItem
+              v-model:children="item.children"
+              v-model:drag="isDrag"
+              :slot-key="index"
+          />
+        </template>
+      </ComponentRender>
     </template>
   </DraggableTansitionGroup>
 </template>

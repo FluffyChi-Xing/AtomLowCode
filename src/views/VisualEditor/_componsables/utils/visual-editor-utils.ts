@@ -214,3 +214,76 @@ export function createNewBlock(component: VisualEditorComponent): VisualEditorBl
         model: {},
     };
 }
+
+/**
+ * @description 页面对象
+ */
+export type VisualEditorPage = {
+    /** 页面标题 */
+    title: string;
+    /** 页面路径 */
+    path: string;
+    /** 404是重定向到默认页面 */
+    isDefault?: boolean;
+    /** 页面配置 */
+    config: PageConfig;
+    /** 页面区块 */
+    section: VisualEditorSection[];
+};
+
+export type VisualEditorSection = {
+    /** 区块索引 */
+    index: number;
+    /** 区块名称 */
+    label: string;
+    /** 是否聚焦 */
+    isShow: boolean;
+    /** 当前页面的所有组件 */
+    component: VisualEditorBlockTypes[];
+}
+
+
+/**
+ * @description 可以认为是 路由=>页面
+ */
+export type VisualEditorPages = {
+    [path: string]: VisualEditorPage;
+};
+
+/**
+ * @description 总的数据集
+ */
+export type VisualEditorModelValue = {
+    /** 页面 */
+    pages: VisualEditorPages;
+    /** 实体 */
+    models: VisualEditorModel[];
+    /** 动作 */
+    actions: VisualEditorActions;
+};
+
+/**
+ * @description 数据模型
+ */
+export type VisualEditorModel = {
+    /** 数据源名称 */
+    name: string;
+    /** 绑定的字段 该字段创建的时候生成 */
+    key: string;
+    /** 实体集合 */
+    entitys: EntityType[];
+};
+
+/**
+ * @description 动作集合
+ */
+export type VisualEditorActions = {
+    fetch: {
+        name: '接口请求';
+        apis: FetchApiItem[];
+    };
+    dialog: {
+        name: '对话框';
+        handlers: [];
+    };
+};
