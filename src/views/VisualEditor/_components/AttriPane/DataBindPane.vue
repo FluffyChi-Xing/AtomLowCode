@@ -4,6 +4,7 @@ import type {VisualEditorComponent} from "@/views/VisualEditor/_componsables/uti
 import {watch} from "vue";
 import DataPaneBreadCrumb from "@/views/VisualEditor/_components/AttriPane/_components/DataPaneBreadCrumb.vue";
 import AttributePane from "@/views/VisualEditor/_components/AttriPane/_components/AttributePane.vue";
+import EmptyPane from "@/views/VisualEditor/_components/AttriPane/_components/EmptyPane.vue";
 
 const props = withDefaults(defineProps<{
   currentNode?: VisualEditorComponent;
@@ -63,6 +64,8 @@ function checkPane(item: string) {
   switch (item) {
     case 'attribute':
       return AttributePane
+    default:
+      return EmptyPane
   }
 }
 
