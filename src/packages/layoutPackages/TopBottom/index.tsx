@@ -8,8 +8,24 @@ export default {
     moduleName: 'layoutComponents',
     label: '上下布局',
     preview: () => <ElContainer>
-        <ElHeader>header</ElHeader>
-        <ElMain>Main</ElMain>
+        <ElHeader>
+            header
+            <SectionItem
+                list={[]}
+                label={'嵌套组件'}
+                drag={true}
+                isShow={false}
+            />
+        </ElHeader>
+        <ElMain>
+            Main
+            <SectionItem
+                list={[]}
+                label={'嵌套组件'}
+                drag={true}
+                isShow={false}
+            />
+        </ElMain>
     </ElContainer>,
     render: ({ props, block, styles}) => {
         const { registerRef } = useGlobalProperties();
@@ -17,8 +33,24 @@ export default {
         return () => (
             <div style={styles}>
                 <ElContainer ref={(el) => registerRef(el, block._vid)} {...props}>
-                    <ElHeader>Header</ElHeader>
-                    <ElMain>Main</ElMain>
+                    <ElHeader>
+                        Header
+                        <SectionItem
+                            list={[]}
+                            label={'嵌套组件'}
+                            drag={true}
+                            isShow={false}
+                        />
+                    </ElHeader>
+                    <ElMain>
+                        Main
+                        <SectionItem
+                            list={[]}
+                            label={'嵌套组件'}
+                            drag={true}
+                            isShow={false}
+                        />
+                    </ElMain>
                 </ElContainer>
             </div>
         )
