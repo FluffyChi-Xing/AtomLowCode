@@ -9,6 +9,7 @@ import MaterialPane from '@/views/VisualEditor/_components/MaterialPane/index.vu
 import type {VisualEditorComponent} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
 import {SectionTypes} from "@/views/VisualEditor/_componsables/api/sectionTypes";
 import OutlineTreePane from '@/views/VisualEditor/_components/OutlineTreePane/index.vue'
+import DataSourcePane from '@/views/VisualEditor/_components/DataSourcePane/index.vue'
 
 
 /** ===== 画布尺寸调节-start ===== **/
@@ -61,7 +62,7 @@ function checkComponent(index: string) {
     case 'dataSource':
       title.value = '数据源'
           placeholder.value = '请输入数据源名称'
-          currentComponent.value = ''
+          currentComponent.value = DataSourcePane
           break;
     case 'schema':
       title.value = 'Schema'

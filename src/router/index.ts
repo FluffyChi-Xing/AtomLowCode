@@ -1,5 +1,5 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
-import NPProgress from 'nprogress'
+import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -82,11 +82,11 @@ router.beforeEach((to) => {
   }
   // 处理首页重定向
   if (to.path === '/') return '/home'
-  NPProgress.start()
+  NProgress.start()
 })
 
 // after each
 router.afterEach(() => {
-  NPProgress.done()
+  NProgress.done()
 })
 export default router
