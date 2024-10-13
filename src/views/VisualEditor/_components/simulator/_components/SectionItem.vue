@@ -53,7 +53,7 @@ function handleFocusComp(index: number) {
 }
 
 function handleDeleteComp(index: number) {
-  console.log('删除了', tempList.value[index].key)
+  // console.log('删除了', tempList.value[index].key)
   tempList.value.splice(index, 1);
 }
 

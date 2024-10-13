@@ -83,6 +83,7 @@ watch(() => reactSize.value, (val) => {
               style="width: 200px;"
               placeholder="请输入画布宽度"
               :min="375"
+              :max="1100"
               class="ml-4"
               @keydown.enter="handleSizeChange"
           >

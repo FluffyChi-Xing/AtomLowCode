@@ -7,6 +7,8 @@ import {AddLocation, DeleteLocation} from "@element-plus/icons-vue";
 import DataBindPane from "@/views/VisualEditor/_components/AttriPane/DataBindPane.vue";
 import MaterialPane from '@/views/VisualEditor/_components/MaterialPane/index.vue'
 import type {VisualEditorComponent} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
+import {SectionTypes} from "@/views/VisualEditor/_componsables/api/sectionTypes";
+import OutlineTreePane from '@/views/VisualEditor/_components/OutlineTreePane/index.vue'
 
 
 /** ===== 画布尺寸调节-start ===== **/
@@ -29,12 +31,19 @@ const placeholder = ref<string>('请输入节点名称')
 const currentComponent = ref<any>(null)
 const currentNode = ref<VisualEditorComponent>(null)
 const currentSection = ref<string>('')
+const sectionList = ref<SectionTypes.pageSection[]>([
+  {
+    index: 1,
+    label: 'section1',
+    isShow: false,
+    component: []
+  }
+])
 
 function initChoice(index: string) {
   drawerChoice.value = index
   checkComponent(index)
   isExpand.value = true
-  console.log(index)
 }
 
 function checkComponent(index: string) {
@@ -47,7 +56,7 @@ function checkComponent(index: string) {
     case 'tree':
       title.value = '大纲树'
           placeholder.value = '请输入节点名称'
-          currentComponent.value = ''
+          currentComponent.value = OutlineTreePane
           break;
     case 'dataSource':
       title.value = '数据源'
@@ -85,6 +94,11 @@ function checkCurrentNode(index: VisualEditorComponent) {
 
 function getCurrentSec(index: string) {
   currentSection.value = index
+}
+
+function syncSectionList(index: SectionTypes.pageSection[]) {
+  sectionList.value = index
+  // console.log('visualEditor sectionList:', sectionList.value)
 }
 
 
@@ -129,6 +143,7 @@ watch(() => drawerChoice.value, (val) => {
           <Simulator
               @focus-comp="checkCurrentNode"
               @currentSec="getCurrentSec"
+              @upload-section="syncSectionList"
           />
         </div>
       </div>
@@ -179,7 +194,10 @@ watch(() => drawerChoice.value, (val) => {
         </div>
       </template>
       <template #default>
-        <component :is="currentComponent" />
+        <component
+            :is="currentComponent"
+            :list="sectionList"
+        />
       </template>
     </el-drawer>
   </div>

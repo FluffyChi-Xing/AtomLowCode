@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref} from 'vue';
+import {ref, watch} from 'vue';
 import SectionItem from "@/views/VisualEditor/_components/simulator/_components/SectionItem.vue";
 import type {SectionTypes} from "@/views/VisualEditor/_componsables/api/sectionTypes";
 import {$notify} from "@/componsabels/Element-Plus";
@@ -23,7 +23,7 @@ const sectionList = ref<SectionTypes.pageSection[]>([
   }
 ])
 const drag = ref<boolean>(false)
-const emits = defineEmits(['focusComp', 'currentSec'])
+const emits = defineEmits(['focusComp', 'currentSec', 'uploadSection'])
 
 
 /**
@@ -38,7 +38,7 @@ function handleCreateSection() {
     isShow: false,
     component: []
   })
-  console.log('add section list:', sectionList.value)
+  syncSectionList()
 }
 
 /**
@@ -64,6 +64,7 @@ function handleDelete(label: string) {
     const index = sectionList.value.findIndex((item: SectionTypes.pageSection) => item.label === label);
     if (index !== -1) {
       sectionList.value.splice(index, 1);
+      syncSectionList()
     }
   } else {
     $notify({
@@ -87,8 +88,17 @@ function createComponent(item: SectionTypes.createComp) {
   sectionList.value.find((some: SectionTypes.pageSection) => {
     if (item.sectionLabel === some.label) {
       some.component.push(item.comp)
+      syncSectionList()
     }
   })
+}
+
+/**
+ * 同步sectionList
+ */
+function syncSectionList() {
+  // console.log('sectionList:', sectionList.value)
+  emits('uploadSection', sectionList.value)
 }
 </script>
 
