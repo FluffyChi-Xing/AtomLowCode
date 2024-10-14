@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import {onMounted, ref, watch} from 'vue'
 const props = withDefaults(defineProps<{
   type?: string;
   dataId?: number;
@@ -10,22 +10,32 @@ const props = withDefaults(defineProps<{
   delayTime: number;
   disabled?: boolean;
 }>(), {
-  type: 'fetch',
   requestType: 'GET',
   isAuto: true,
   isCross: true,
   delayTime: 5000,
-  dataUrl: 'mock/index.json',
+  dataURL: 'mock/index.json',
   disabled: true
 })
 
-const dataType = ref<string>(props.type)
-const dataId = ref<number>(props.dataId)
-const autoReq = ref<boolean>(props.isAuto)
-const dataUrl = ref<string>(props.dataUrl)
-const requestType = ref<string>(props.requestType)
-const crossOrigin = ref<boolean>(props.isCross)
-const delayTime = ref<number>(props.delayTime)
+const dataType = ref<string>()
+const dataID = ref<number>()
+const autoReq = ref<boolean>()
+const DataUrl = ref<string>()
+const RequestType = ref<string>()
+const CrossOrigin = ref<boolean>()
+const DelayTime = ref<number>()
+
+function initData() {
+  dataType.value = props.type
+  dataID.value = props.dataId
+  autoReq.value = props.isAuto
+  DataUrl.value = props.dataUrl
+  RequestType.value = props.requestType
+  CrossOrigin.value = props.isCross
+  DelayTime.value = props.delayTime
+}
+
 
 const requestTypeList = [
   {
@@ -45,6 +55,14 @@ const requestTypeList = [
     value: 'DELETE'
   },
 ]
+
+onMounted(() => {
+  initData()
+})
+
+watch(() => props.type, () => {
+  initData()
+})
 </script>
 
 <template>
@@ -61,7 +79,7 @@ const requestTypeList = [
       </el-form-item>
       <el-form-item label="数据源 ID">
         <el-input
-            v-model="dataId"
+            v-model="dataID"
             clearable
             placeholder="请输入数据源 ID"
             class="w-full"
@@ -77,7 +95,7 @@ const requestTypeList = [
       </el-form-item>
       <el-form-item required label="请求地址">
         <el-input
-            v-model="dataUrl"
+            v-model="DataUrl"
             clearable
             placeholder="请输入请求地址"
             class="w-full"
@@ -86,7 +104,7 @@ const requestTypeList = [
       </el-form-item>
       <el-form-item required label="请求方法">
         <el-select
-            v-model="requestType"
+            v-model="RequestType"
             placeholder="请选择请求方法"
             :disabled="props.disabled"
         >
@@ -100,13 +118,13 @@ const requestTypeList = [
       </el-form-item>
       <el-form-item required label="是否支持跨域">
         <el-switch
-            v-model="crossOrigin"
+            v-model="CrossOrigin"
             :disabled="props.disabled"
         />
       </el-form-item>
       <el-form-item label="超时时长">
         <el-input-number
-            v-model="delayTime"
+            v-model="DelayTime"
             :min="0"
             :max="15000"
             step="100"

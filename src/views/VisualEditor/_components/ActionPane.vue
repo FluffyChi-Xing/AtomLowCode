@@ -2,10 +2,11 @@
 import {ref, watch} from 'vue';
 import type {VisualEditorTypes} from "@/views/VisualEditor/_componsables/api/visualEditorTypes";
 import {Cellphone, Iphone, Monitor, RefreshLeft, RefreshRight} from "@element-plus/icons-vue";
+import {$message} from "@/componsabels/Element-Plus";
 
 
 
-const emits = defineEmits(['sizeChange'])
+const emits = defineEmits(['sizeChange', 'resetPage'])
 /** ====== 画布尺寸调整-start ===== */
 const reactSize = ref<string>('pc');
 const sizeNumber = ref<number>(device2px(reactSize.value));
@@ -44,6 +45,27 @@ watch(() => reactSize.value, (val) => {
   sizeNumber.value = device2px(val);
 })
 /** ====== 画布尺寸调整-end ===== */
+
+/** ====== 保存到本地-start ===== */
+const isLoading = ref<boolean>(false)
+function handleSave() {
+  isLoading.value = true
+  setTimeout(() => {
+    isLoading.value = false
+    $message({
+      type: "success",
+      message: "保存成功",
+      offset: 80
+    })
+  }, 1500)
+}
+/** ====== 保存到本地-end ===== */
+
+/** ====== 页面重置-start ===== */
+function resetPage() {
+  emits('resetPage')
+}
+/** ====== 页面重置-end ===== */
 </script>
 
 <template>
@@ -119,9 +141,9 @@ watch(() => reactSize.value, (val) => {
       <!-- 异步资源加载 -->
       <el-button>异步加载资源</el-button>
       <!-- 保存到本地 -->
-      <el-button type="primary">保存</el-button>
+      <el-button :loading="isLoading" @click="handleSave" type="primary">保存</el-button>
       <!-- 页面重置 -->
-      <el-button>重置页面</el-button>
+      <el-button @click="resetPage">重置页面</el-button>
       <!-- 页面预览 -->
       <el-button class="theme-btn">预览</el-button>
     </div>

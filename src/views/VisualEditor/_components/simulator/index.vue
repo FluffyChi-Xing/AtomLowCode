@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, watch} from 'vue';
+import {onMounted, ref, watch} from 'vue';
 import SectionItem from "@/views/VisualEditor/_components/simulator/_components/SectionItem.vue";
 import type {SectionTypes} from "@/views/VisualEditor/_componsables/api/sectionTypes";
 import {$notify} from "@/componsabels/Element-Plus";
@@ -11,6 +11,12 @@ import type {
 defineOptions({
   name: 'SimulatorEditor',
 });
+
+const props = withDefaults(defineProps<{
+  clearAll?: boolean;
+}>(), {
+  clearAll: false
+})
 
 const simulator = ref() // 获取模拟器容器
 
@@ -100,6 +106,22 @@ function syncSectionList() {
   // console.log('sectionList:', sectionList.value)
   emits('uploadSection', sectionList.value)
 }
+
+
+/**
+ * 页面重置
+ * @param index
+ */
+function handleClearAll(index: boolean) {
+  sectionList.value = sectionList.value.splice(0, 1)
+  // TODO 清除第一级 section 内的所有组件
+  // sectionList.value[0].component = []
+  console.log(`页面重置${index}`, sectionList.value)
+}
+
+watch(() => props.clearAll, (val) => {
+  handleClearAll(val)
+})
 </script>
 
 <template>

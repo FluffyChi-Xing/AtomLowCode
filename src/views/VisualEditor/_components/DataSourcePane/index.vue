@@ -30,7 +30,7 @@ const dataSourceList = ref<DataSourceTypes.dataCardTypes[]>([
     id: 1
   }
 ])
-const emits = defineEmits(['syncView', 'syncEdit', 'syncDelete'])
+const emits = defineEmits(['syncView', 'syncEdit', 'syncDelete', 'createCards'])
 
 function handleView(index: DataSourceTypes.cardSendMes) {
   emits('syncView', {
@@ -64,6 +64,16 @@ function handleDelete(index: number) {
     })?.name
   })
 }
+
+function handleClear() {
+  sourceTypes.value = ''
+}
+
+function createCards(index: string) {
+  if (index) {
+    emits('createCards', index)
+  }
+}
 /** ===== 数据源初始化-end ===== **/
 </script>
 
@@ -76,6 +86,9 @@ function handleDelete(index: number) {
           placeholder="新建数据源"
           style="width: 150px"
           class="mr-2"
+          clearable
+          @clear="handleClear"
+          @change="createCards"
       >
         <el-option
             v-for="(item, index) in defaultOptions"

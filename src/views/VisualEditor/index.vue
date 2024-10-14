@@ -112,9 +112,9 @@ function getCurrentSec(index: string) {
   currentSection.value = index
 }
 
+// 数据源配置 drawer 初始化
 function syncSectionList(index: SectionTypes.pageSection[]) {
   sectionList.value = index
-  // console.log('visualEditor sectionList:', sectionList.value)
 }
 
 function syncView(index: DataSourceTypes.sourcePaneMes) {
@@ -132,9 +132,14 @@ function syncEdit(index: DataSourceTypes.sourcePaneMes) {
 }
 
 function syncDelete(index: any) {
-  console.log('delete', index.name)
   deleteCard.value = true
   deleteName.value = index.name ? index.name : '--'
+}
+function createCard(index: string) {
+  dataSourceDrawer.value = true
+  secondDrawerDisabled.value = false
+  currentCard.value.type = index
+  dataPaneTitle.value = `创建数据源 ${index}`
 }
 
 // 删除数据源卡片弹框
@@ -156,6 +161,13 @@ watch(() => drawerChoice.value, () => {
   isExpand.value = true
 })
 /** ===== 侧边抽屉-end ===== **/
+
+/** ===== 页面重置-start ===== **/
+const isReset = ref<boolean>(false)
+function handleReset() {
+  isReset.value = !isReset.value
+}
+/** ===== 页面重置-end ===== **/
 </script>
 
 <template>
@@ -164,6 +176,7 @@ watch(() => drawerChoice.value, () => {
     <div class="w-full h-12 flex bg-red-500 mb-0.5">
       <ActionPane
           @size-change="changeSize"
+          @reset-page="handleReset"
       />
     </div>
     <!-- 工作台 -->
@@ -191,6 +204,7 @@ watch(() => drawerChoice.value, () => {
             :style="'width: ' + canvasSize + 'px'"
         >
           <Simulator
+              :clear-all="isReset"
               @focus-comp="checkCurrentNode"
               @currentSec="getCurrentSec"
               @upload-section="syncSectionList"
@@ -251,6 +265,7 @@ watch(() => drawerChoice.value, () => {
             @syncView="syncView"
             @syncEdit="syncEdit"
             @syncDelete="syncDelete"
+            @createCards="createCard"
         />
       </template>
     </el-drawer>
