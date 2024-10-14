@@ -8,7 +8,7 @@ export namespace SectionTypes {
         index: number;
         label: string;
         isShow?: boolean;
-        components?: VisualEditorBlockTypes[];
+        component?: VisualEditorBlockTypes[];
     }
 
     /**

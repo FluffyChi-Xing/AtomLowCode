@@ -12,6 +12,8 @@ import OutlineTreePane from '@/views/VisualEditor/_components/OutlineTreePane/in
 import DataSourcePane from '@/views/VisualEditor/_components/DataSourcePane/index.vue'
 import {DataSourceTypes} from "@/views/VisualEditor/_components/DataSourcePane/_componsables/apis/DataSourceTypes";
 import CreateDataSourceForm from "@/views/VisualEditor/_components/createDataSourceForm.vue";
+import GenerateDialog from "@/components/GenerateDialog.vue";
+import {$message} from "@/componsabels/Element-Plus";
 
 
 /** ===== 画布尺寸调节-start ===== **/
@@ -44,7 +46,11 @@ const sectionList = ref<SectionTypes.pageSection[]>([
 ])
 const dataSourceDrawer = ref<boolean>(false)
 const currentCard = ref<DataSourceTypes.dataCardTypes>()
-const dataPaneTitle = computed(() => `创建数据源 ${currentCard.value?.type}`)
+const dataPaneTitle = ref<string>(`创建数据源 ${currentCard.value?.type}`)
+const secondDrawerDisabled = ref<boolean>(true)
+const deleteCard = ref<boolean>(false)
+const deleteName = ref<string>()
+const deleteCardTitle = computed(() => `你确定要删除 ${deleteName.value} 吗？`)
 
 function initChoice(index: string) {
   drawerChoice.value = index
@@ -114,7 +120,35 @@ function syncSectionList(index: SectionTypes.pageSection[]) {
 function syncView(index: DataSourceTypes.sourcePaneMes) {
   dataSourceDrawer.value = index.expand;
   currentCard.value = index.value
-  console.log(index.value)
+  secondDrawerDisabled.value = true
+  dataPaneTitle.value = `查看数据源`
+}
+
+function syncEdit(index: DataSourceTypes.sourcePaneMes) {
+  dataSourceDrawer.value = index.expand;
+  currentCard.value = index.value
+  secondDrawerDisabled.value = false
+  dataPaneTitle.value = `编辑数据源 ${index.value?.type}`
+}
+
+function syncDelete(index: any) {
+  console.log('delete', index.name)
+  deleteCard.value = true
+  deleteName.value = index.name ? index.name : '--'
+}
+
+// 删除数据源卡片弹框
+function handleCancel(index: boolean) {
+  deleteCard.value = index
+}
+
+function handleConfirm(index: boolean) {
+  deleteCard.value = index
+  $message({
+    type: 'success',
+    message: '删除成功',
+    offset: 80
+  })
 }
 
 
@@ -180,6 +214,7 @@ watch(() => drawerChoice.value, () => {
         :close-on-click-modal="isFixed"
         :modal="false"
         :modal-class="['mask-layer']"
+        :show-close="!dataSourceDrawer"
         @close="closeDrawer"
     >
       <template #header>
@@ -214,6 +249,8 @@ watch(() => drawerChoice.value, () => {
             :is="currentComponent"
             :list="sectionList"
             @syncView="syncView"
+            @syncEdit="syncEdit"
+            @syncDelete="syncDelete"
         />
       </template>
     </el-drawer>
@@ -235,9 +272,23 @@ watch(() => drawerChoice.value, () => {
         <CreateDataSourceForm
             :type="currentCard?.type"
             :data-id="currentCard?.id"
+            :disabled="secondDrawerDisabled"
         />
       </div>
     </el-drawer>
+    <!-- delete data card dialog -->
+    <GenerateDialog
+        v-model:visible="deleteCard"
+        :title="deleteCardTitle"
+        @cancel="handleCancel"
+        @confirm="handleConfirm"
+    >
+      <template #main>
+        <span class="text-red-500 font-bold">
+          一旦删除，这些数据可能会失去，请谨慎操作！
+        </span>
+      </template>
+    </GenerateDialog>
   </div>
 </template>
 

@@ -30,7 +30,7 @@ function exchangeList(item: SectionTypes.pageSection[] | []) {
         children: thing.component?.map((comp: any) => {
           return {
             label: comp?.label ? comp.label : '--',
-            children: comp.props?.slots ? comp.props.slots : []
+            children: null
           }
         })
       })

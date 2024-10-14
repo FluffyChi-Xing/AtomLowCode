@@ -30,7 +30,7 @@ const dataSourceList = ref<DataSourceTypes.dataCardTypes[]>([
     id: 1
   }
 ])
-const emits = defineEmits(['syncView'])
+const emits = defineEmits(['syncView', 'syncEdit', 'syncDelete'])
 
 function handleView(index: DataSourceTypes.cardSendMes) {
   emits('syncView', {
@@ -40,6 +40,28 @@ function handleView(index: DataSourceTypes.cardSendMes) {
         return item
       }
     })
+  })
+}
+
+function handleEdit(index: DataSourceTypes.cardSendMes) {
+  emits('syncEdit', {
+    expand: index.expand,
+    value: dataSourceList.value?.find((item: DataSourceTypes.dataCardTypes) => {
+      if (item.id === index.id) {
+        return item
+      }
+    })
+  })
+}
+
+function handleDelete(index: number) {
+  emits('syncDelete', {
+    id: index,
+    name: dataSourceList.value?.find((item: DataSourceTypes.dataCardTypes) => {
+      if (item.id === index) {
+        return item.name
+      }
+    })?.name
   })
 }
 /** ===== 数据源初始化-end ===== **/
@@ -84,6 +106,8 @@ function handleView(index: DataSourceTypes.cardSendMes) {
               :data-name="item.name"
               :data-types="item.type"
               @view="handleView"
+              @edit="handleEdit"
+              @delete="handleDelete"
           />
         </div>
         <div

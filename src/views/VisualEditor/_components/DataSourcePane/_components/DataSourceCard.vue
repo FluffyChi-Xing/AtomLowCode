@@ -18,7 +18,7 @@ const viewBtn = ref<any>(View)
 const isView = ref<boolean>(false)
 const editBtn = ref<any>(Edit)
 const isEdit = ref<boolean>(false)
-const emits = defineEmits(['view'])
+const emits = defineEmits(['view', 'edit', 'delete'])
 
 function handleView() {
   isView.value = !isView.value
@@ -37,12 +37,22 @@ function handleView() {
   }
 }
 
-function handleEdit() {
-  isEdit.value = true
-}
-
 function viewEmit(index: DataSourceTypes.cardSendMes) {
   emits('view', index)
+}
+
+function handleEdit() {
+  isEdit.value = !isEdit.value
+  emits('edit', {
+    id: props.dataId,
+    expand: isEdit.value
+  })
+}
+
+function handleDelete() {
+  if (!isEdit.value && !isView.value) {
+    emits('delete', props.dataId)
+  }
 }
 /** ===== 数据源卡片处理-end ===== **/
 </script>
@@ -93,7 +103,7 @@ function viewEmit(index: DataSourceTypes.cardSendMes) {
             content="删除"
             placement="bottom"
         >
-          <el-button type="text">
+          <el-button @click="handleDelete" type="text">
             <el-icon>
               <Delete />
             </el-icon>

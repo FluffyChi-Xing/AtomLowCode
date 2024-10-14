@@ -8,6 +8,6 @@ export namespace OutlineTreeTypes {
      */
     export interface treeLabelTypes {
         label: string;
-        children: treeLabelTypes[];
+        children?: treeLabelTypes[];
     }
 }
