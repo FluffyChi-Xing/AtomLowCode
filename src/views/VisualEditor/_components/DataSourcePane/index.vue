@@ -30,6 +30,18 @@ const dataSourceList = ref<DataSourceTypes.dataCardTypes[]>([
     id: 1
   }
 ])
+const emits = defineEmits(['syncView'])
+
+function handleView(index: DataSourceTypes.cardSendMes) {
+  emits('syncView', {
+    expand: index.expand,
+    value: dataSourceList.value?.find((item: DataSourceTypes.dataCardTypes) => {
+      if (item.id === index.id) {
+        return item
+      }
+    })
+  })
+}
 /** ===== 数据源初始化-end ===== **/
 </script>
 
@@ -68,8 +80,10 @@ const dataSourceList = ref<DataSourceTypes.dataCardTypes[]>([
           <DataSourceCard
               v-for="(item, index) in dataSourceList"
               :key="index"
+              :data-id="item.id"
               :data-name="item.name"
               :data-types="item.type"
+              @view="handleView"
           />
         </div>
         <div

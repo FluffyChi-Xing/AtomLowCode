@@ -1,9 +1,14 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import {Delete, Edit, Hide, View} from "@element-plus/icons-vue";
+import {DataSourceTypes} from "@/views/VisualEditor/_components/DataSourcePane/_componsables/apis/DataSourceTypes";
 
-withDefaults(defineProps<{
+
+
+const props = withDefaults(defineProps<{
   dataName?: string;
   dataTypes?: string;
+  dataId?: number;
 }>(), {
 
 })
@@ -13,18 +18,31 @@ const viewBtn = ref<any>(View)
 const isView = ref<boolean>(false)
 const editBtn = ref<any>(Edit)
 const isEdit = ref<boolean>(false)
+const emits = defineEmits(['view'])
 
 function handleView() {
   isView.value = !isView.value
   if (isView.value) {
     viewBtn.value = Hide
+    viewEmit({
+      id: props.dataId,
+      expand: isView.value
+    })
   } else {
     viewBtn.value = View
+    viewEmit({
+      id: props.dataId,
+      expand: isView.value
+    })
   }
 }
 
 function handleEdit() {
   isEdit.value = true
+}
+
+function viewEmit(index: DataSourceTypes.cardSendMes) {
+  emits('view', index)
 }
 /** ===== 数据源卡片处理-end ===== **/
 </script>

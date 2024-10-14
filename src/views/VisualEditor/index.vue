@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, watch} from 'vue'
+import {computed, ref, watch} from 'vue'
 import ActionPane from "@/views/VisualEditor/_components/ActionPane.vue";
 import SideActionPane from "@/views/VisualEditor/_components/SideActionPane.vue";
 import Simulator from './_components/simulator/index.vue'
@@ -10,6 +10,8 @@ import type {VisualEditorComponent} from "@/views/VisualEditor/_componsables/uti
 import {SectionTypes} from "@/views/VisualEditor/_componsables/api/sectionTypes";
 import OutlineTreePane from '@/views/VisualEditor/_components/OutlineTreePane/index.vue'
 import DataSourcePane from '@/views/VisualEditor/_components/DataSourcePane/index.vue'
+import {DataSourceTypes} from "@/views/VisualEditor/_components/DataSourcePane/_componsables/apis/DataSourceTypes";
+import CreateDataSourceForm from "@/views/VisualEditor/_components/createDataSourceForm.vue";
 
 
 /** ===== 画布尺寸调节-start ===== **/
@@ -40,11 +42,17 @@ const sectionList = ref<SectionTypes.pageSection[]>([
     component: []
   }
 ])
+const dataSourceDrawer = ref<boolean>(false)
+const currentCard = ref<DataSourceTypes.dataCardTypes>()
+const dataPaneTitle = computed(() => `创建数据源 ${currentCard.value?.type}`)
 
 function initChoice(index: string) {
   drawerChoice.value = index
   checkComponent(index)
   isExpand.value = true
+  if (index !== 'dataSource') {
+    dataSourceDrawer.value = false
+  }
 }
 
 function checkComponent(index: string) {
@@ -78,6 +86,7 @@ function closeDrawer() {
   fixedSize.value = '0px'
   fixedIcon.value = AddLocation
   drawerChoice.value = '' // 关闭抽屉时清空当前选择
+  dataSourceDrawer.value = false
 }
 function fixedDrawer() {
   isFixed.value = !isFixed.value
@@ -102,8 +111,14 @@ function syncSectionList(index: SectionTypes.pageSection[]) {
   // console.log('visualEditor sectionList:', sectionList.value)
 }
 
+function syncView(index: DataSourceTypes.sourcePaneMes) {
+  dataSourceDrawer.value = index.expand;
+  currentCard.value = index.value
+  console.log(index.value)
+}
 
-watch(() => drawerChoice.value, (val) => {
+
+watch(() => drawerChoice.value, () => {
   isExpand.value = true
 })
 /** ===== 侧边抽屉-end ===== **/
@@ -159,7 +174,7 @@ watch(() => drawerChoice.value, (val) => {
     <!-- side drawer -->
     <el-drawer
         v-model="isExpand"
-        style="height: calc(100% - 50px);margin-top: 50px"
+        style="height: calc(100% - 50px);margin-top: 50px;padding-left: 48px !important;"
         direction="ltr"
         size="350px"
         :close-on-click-modal="isFixed"
@@ -198,8 +213,30 @@ watch(() => drawerChoice.value, (val) => {
         <component
             :is="currentComponent"
             :list="sectionList"
+            @syncView="syncView"
         />
       </template>
+    </el-drawer>
+    <!-- second level drawer -->
+    <el-drawer
+        v-model="dataSourceDrawer"
+        direction="ltr"
+        size="600px"
+        style="height: calc(100% - 50px);margin-top: 50px;border-left: 1px solid #EDEFF3"
+        :close-on-click-modal="isFixed"
+        :modal="false"
+        :modal-class="['mask-2layer']"
+        :show-close="false"
+    >
+      <template #header>
+        <span class="text-gray-500 font-bold">{{ dataPaneTitle }}</span>
+      </template>
+      <div class="w-full h-auto flex flex-col">
+        <CreateDataSourceForm
+            :type="currentCard?.type"
+            :data-id="currentCard?.id"
+        />
+      </div>
     </el-drawer>
   </div>
 </template>
@@ -210,7 +247,7 @@ watch(() => drawerChoice.value, (val) => {
 }
 
 :deep(.el-drawer) {
-  padding-left: 48px !important;
+  box-shadow: none !important;
 }
 
 :deep(.el-drawer__header) {
@@ -219,5 +256,10 @@ watch(() => drawerChoice.value, (val) => {
 
 :deep(.mask-layer) {
   width: 348px !important;
+}
+
+:deep(.mask-2layer) {
+  width: 600px !important;
+  margin-left: 350px;
 }
 </style>

@@ -7,7 +7,18 @@ export namespace DataSourceTypes {
      */
     export interface dataCardTypes {
         name: string;
-        id: number;
+        id?: number;
         type: string;
+    }
+
+    export interface cardSendMes {
+        id: number;
+        expand: boolean;
+    }
+
+
+    export interface sourcePaneMes {
+        expand: boolean;
+        value: dataCardTypes;
     }
 }
