@@ -2,6 +2,7 @@
 import BaseComponent from '../BaseComponent/index.vue'
 import LayoutComponent from '../LayoutComponent/index.vue'
 import FormComponent from '../FormComponent/index.vue'
+import chartsComponent from '../ChartComponent/index.vue'
 const props = withDefaults(defineProps<{
   componentName?: string;
 }>(), {
@@ -22,7 +23,7 @@ function checkComponent(index: string) {
     case 'base':
       return BaseComponent
     case 'chart':
-      return componentTypes[index]
+      return chartsComponent
     case 'business':
       return componentTypes[index]
     case 'layout':

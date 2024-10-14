@@ -2,6 +2,7 @@ import {createVisualEditorConfig} from "@/views/VisualEditor/_componsables/utils
 import baseComponents from "@/packages/basePackages";
 import layoutComponents from '@/packages/layoutPackages'
 import formComponents from '@/packages/formPackages'
+import chartPackages from "@/packages/chartPackages";
 
 export const visualConfig = createVisualEditorConfig();
 // 注册基础组件
@@ -19,4 +20,11 @@ Object.entries(layoutComponents).forEach(([key, component]) => {
 
 Object.entries(formComponents).forEach(([key, component]) => {
     visualConfig.registry('formComponents', key, component)
+})
+
+
+// 注册图表组件
+
+Object.entries(chartPackages).forEach(([key, component]) => {
+    visualConfig.registry('chartComponents', key, component)
 })

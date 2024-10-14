@@ -10,16 +10,16 @@ export default {
     preview: () => <div>
         <ElCarousel style={'width: 100%;'} indicator-position={'outside'} motion-blur={true} height={'200px'}>
             <ElCarouselItem>
-                <img style={'width: 100%;object-fit: contain'} src={'https://picsum.photos/200/300?1'} alt={''} loading={'lazy'} />
+                <img style={'width: 100%;object-fit: contain;'} src={'https://picsum.photos/200/300?1'} alt={''} loading={'lazy'} />
             </ElCarouselItem>
             <ElCarouselItem>
-                <img style={'width: 100%;object-fit: contain'} src={'https://picsum.photos/200/300?2'} alt={''} loading={'lazy'} />
+                <img style={'width: 100%;object-fit: contain;'} src={'https://picsum.photos/200/300?2'} alt={''} loading={'lazy'} />
             </ElCarouselItem>
             <ElCarouselItem>
-                <img style={'width: 100%;object-fit: contain'} src={'https://picsum.photos/200/300?3'} alt={''} loading={'lazy'} />
+                <img style={'width: 100%;object-fit: contain;'} src={'https://picsum.photos/200/300?3'} alt={''} loading={'lazy'} />
             </ElCarouselItem>
             <ElCarouselItem>
-                <img style={'width: 100%;object-fit: contain'} src={'https://picsum.photos/200/300?4'} alt={''} loading={'lazy'} />
+                <img style={'width: 100%;object-fit: contain;'} src={'https://picsum.photos/200/300?4'} alt={''} loading={'lazy'} />
             </ElCarouselItem>
         </ElCarousel>
     </div>,
