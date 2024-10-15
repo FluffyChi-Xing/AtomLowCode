@@ -1,7 +1,10 @@
 import type {VisualEditorComponent} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
 import {ElCarousel, ElCarouselItem} from "element-plus";
 import {useGlobalProperties} from "@/views/VisualEditor/_componsables/hooks/useGlobalProperties";
-import {createEditorInputProp} from "@/views/VisualEditor/_componsables/api/visual-editor.props";
+import {
+    createEditorInputProp,
+    createEditorSelectProp
+} from "@/views/VisualEditor/_componsables/api/visual-editor.props";
 
 export default {
     key: 'swiper',
@@ -51,6 +54,20 @@ export default {
         height: createEditorInputProp({
             label: '高度',
             defaultValue: '200px'
+        }),
+        direction: createEditorSelectProp({
+            label: '方向',
+            options: [
+                {
+                    label: '水平',
+                    value: 'horizontal'
+                },
+                {
+                    label: '垂直',
+                    value: 'vertical'
+                }
+            ],
+            defaultValue: 'horizontal'
         })
     }
 } as VisualEditorComponent;

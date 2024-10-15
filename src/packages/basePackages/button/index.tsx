@@ -14,7 +14,7 @@ export default {
     moduleName: 'basePackages',
     label: '按钮',
     icon: 'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
-    preview: () => <ElButton type={'primary'}>按钮</ElButton>,
+    preview: () => <ElButton loading={false} type={'primary'}>按钮</ElButton>,
     render: ({ props, block, styles}) => {
         const { registerRef } = useGlobalProperties();
 
@@ -62,5 +62,19 @@ export default {
             ],
             defaultValue: 'default',
         }),
+        loading: createEditorSelectProp({
+            label: '加载状态',
+            options: [
+                {
+                    label: '加载中',
+                    value: true,
+                },
+                {
+                    label: '非加载中',
+                    value: false
+                }
+            ],
+            defaultValue: false,
+        })
     }
 } as VisualEditorComponent

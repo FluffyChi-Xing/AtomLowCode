@@ -11,17 +11,23 @@ export default {
     key: 'card',
     moduleName: 'basePackages',
     label: '卡片',
-    preview: () => <div>
-        <ElCard>
-            卡片
-            <SectionItem
-                list={[]}
-                label={'嵌套组件'}
-                drag={true}
-                isShow={false}
-            />
-        </ElCard>
-    </div>,
+    preview: () => {
+        const style = {
+            width: '100%',
+            height: '100%',
+        };
+        return (
+            <ElCard style={style}>
+                卡片
+                <SectionItem
+                    list={[]}
+                    label={'嵌套组件'}
+                    drag={true}
+                    isShow={false}
+                />
+            </ElCard>
+        )
+    },
     render: ({ props, block, styles }) => {
         const { registerRef } = useGlobalProperties();
 
