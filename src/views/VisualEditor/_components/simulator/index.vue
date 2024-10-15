@@ -6,6 +6,7 @@ import {$notify} from "@/componsabels/Element-Plus";
 import type {
   VisualEditorComponent
 } from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
+import {deleteSection, insertSection} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
 
 
 defineOptions({
@@ -38,13 +39,16 @@ const emits = defineEmits(['focusComp', 'currentSec', 'uploadSection'])
 function handleCreateSection() {
   // 向容器内添加一个新的sectionItem组件
   const base = sectionList.value.length
-  sectionList.value.push({
+  const section = {
     index: base + 1,
     label: `section${base + 1}`,
     isShow: false,
     component: []
-  })
+  }
+  sectionList.value.push(section)
   syncSectionList()
+  // 尝试将创建的 section 插入initJson中
+  insertSection(section);
 }
 
 /**
@@ -71,6 +75,8 @@ function handleDelete(label: string) {
     if (index !== -1) {
       sectionList.value.splice(index, 1);
       syncSectionList()
+      // 同步到 sessionStorage
+      deleteSection(label)
     }
   } else {
     $notify({

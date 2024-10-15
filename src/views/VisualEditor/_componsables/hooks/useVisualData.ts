@@ -3,6 +3,7 @@ import type {
     VisualEditorBlockTypes,
     VisualEditorModelValue, VisualEditorPage, VisualEditorSection
 } from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
+import {SectionTypes} from "@/views/VisualEditor/_componsables/api/sectionTypes";
 
 
 export const localKey = "PAGE_DATE_KEY"
@@ -132,4 +133,87 @@ export function initVisualData() {
     // 添加页面
     // 设置当前页面
     // 删除页面
+}
+
+/**
+ * @description 创建区块执行函数
+ * @param localData
+ * @param section
+ */
+function createSection(localData: any, section: any) {
+    // 创建 localData 的深拷贝
+    const newData = JSON.parse(JSON.stringify(localData));
+    // 向 newData.page[0].section 添加新的 section
+    newData.page[0].section?.push(section);
+    console.log('sessionStorage', newData);
+    // 返回 newData
+    return newData;
+}
+
+
+/**
+ * @description 设置sessionStorage
+ * @param key
+ * @param value
+ */
+function setSessionStorage(key: any, value: any) {
+    sessionStorage.setItem(key, JSON.stringify(value))
+}
+
+/**
+ * @description 插入区块
+ * @param section
+ */
+export function insertSection(section?: SectionTypes.pageSection) {
+    let localData = JSON.parse(sessionStorage.getItem(localKey) as string);
+    if (localData) {
+        if (section) {
+            const newData = createSection(localData, section);
+            // 更新sessionStorage
+            setSessionStorage(localKey, newData);
+        }
+    } else {
+        localData = JSON.parse(JSON.stringify(initJson));
+        if (section) {
+            const newData = createSection(localData, section);
+            // 创建sessionStorage
+            setSessionStorage(localKey, newData);
+            console.log('不存在sessionStorage',localData);
+        }
+    }
+}
+
+/**
+ * @description 删除区块执行函数
+ * @param localData
+ * @param section
+ */
+function spliceSection(localData: any, section: string) {
+    const newData = JSON.parse(JSON.stringify(localData));
+    const index = newData.page[0].section?.findIndex((item: any) => item?.label === section);
+    if (index !== undefined && index !== -1) {
+        newData.page[0].section?.splice(index, 1);
+        console.log('sessionStorage 删除区块', newData);
+    }
+    return newData;
+}
+
+/**
+ * @description 删除区块
+ * @param section
+ */
+export function deleteSection(section: any) {
+    let localData = JSON.parse(sessionStorage.getItem(localKey) as string);
+    if (localData) {
+        if (section) {
+            const newData = spliceSection(localData, section);
+            setSessionStorage(localKey, newData);
+        }
+    } else {
+        localData = JSON.parse(JSON.stringify(initJson));
+        if (section) {
+            const newData = spliceSection(localData, section);
+            setSessionStorage(localKey, newData);
+        }
+    }
 }

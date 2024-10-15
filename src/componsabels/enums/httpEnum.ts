@@ -1,0 +1,11 @@
+export enum HttpEnum {
+    UNAUTHORIZED = 401,
+    SUCCESS = 200,
+    CREATED = 201,
+    NOCONTENT = 204,
+    BADREQUEST = 400,
+    FORBIDDEN = 403,
+    NOTFOUND = 404,
+    INTERNALSERVERERROR = 500,
+    BADGATEWAY = 502,
+}
