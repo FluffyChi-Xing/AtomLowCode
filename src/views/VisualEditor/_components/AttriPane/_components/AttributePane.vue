@@ -51,7 +51,7 @@ watch(() => componentType.value, () => {
 })
 
 onMounted(() => {
-  console.log('data:', props.data?.props?.type)
+  console.log('data:', props.data)
 })
 
 watch(() => props.data, () => {

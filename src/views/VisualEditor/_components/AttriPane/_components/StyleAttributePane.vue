@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import {reactive, ref} from 'vue';
 withDefaults(defineProps<{
   data?: any;
 }>(), {
@@ -9,6 +9,24 @@ withDefaults(defineProps<{
 
 const resourceWidth = ref<string>()
 const resourceHeight = ref<string>()
+interface blankTypes {
+  left: string;
+  right: string;
+  top: string;
+  bottom: string;
+}
+const margin = reactive<blankTypes>({
+  left: '',
+  right: '',
+  top: '',
+  bottom: ''
+})
+const padding = reactive<blankTypes>({
+  left: '',
+  right: '',
+  top: '',
+  bottom: ''
+})
 
 function clearHeight() {
   resourceHeight.value = ''
@@ -25,7 +43,7 @@ function clearWidth() {
     <el-collapse>
       <el-collapse-item title="布局" name="1">
         <template #default>
-          <div class="w-full h-[216px] flex flex-col">
+          <div class="w-full h-[250px] flex flex-col">
             <!-- 盒子编辑器 -->
             <div
                 style="height: calc(100% - 40px)"
@@ -34,45 +52,77 @@ function clearWidth() {
               <div class="w-full h-full col-span-1 row-span-1" />
               <!-- margin top -->
               <div class="w-full h-full flex items-center bg-[#D6E4FF] col-span-8 row-span-1">
-
+                <el-form-item class="w-full h-6" label="top">
+                  <el-input
+                      v-model="margin.top"
+                      style="height: 24px"
+                  />
+                </el-form-item>
               </div>
               <div class="w-full h-full col-span-1 row-span-1" />
               <!-- margin left -->
               <div class="w-full h-full flex items-center bg-[#D6E4FF] col-span-1 row-span-4">
-
+                <el-input
+                    v-model="margin.left"
+                    style="width: 100%;height: 100%"
+                />
               </div>
               <!-- inner box -->
               <div class="w-full h-full grid grid-cols-8 grid-rows-4 col-span-8 row-span-4">
                 <div class="w-full h-full col-span-1 row-span-1" />
                 <!-- padding top -->
                 <div class="w-full h-full flex items-center bg-[#D6E4FF] col-span-6 row-span-1">
-
+                  <el-form-item class="w-full h-6" label="top">
+                    <el-input
+                        v-model="padding.top"
+                        style="height: 24px"
+                    />
+                  </el-form-item>
                 </div>
                 <div class="w-full h-full col-span-1 row-span-1" />
                 <!-- padding left -->
                 <div class="w-full h-full flex items-center bg-[#D6E4FF] col-span-1 row-span-2">
-
+                  <el-input
+                      v-model="padding.left"
+                      style="width: 100%;height: 100%"
+                  />
                 </div>
                 <!-- inner box -->
                 <div class="w-full h-full flex col-span-6 row-span-2" />
                 <!-- padding right -->
                 <div class="w-full h-full flex items-center bg-[#D6E4FF] col-span-1 row-span-2">
-
+                  <el-input
+                      v-model="padding.right"
+                      style="width: 100%;height: 100%"
+                  />
                 </div>
                 <div class="w-full h-full col-span-1 row-span-1" />
                 <!-- padding bottom -->
                 <div class="w-full h-full flex items-center bg-[#D6E4FF] col-span-6 row-span-1">
-
+                  <el-form-item class="w-full h-6" label="bottom">
+                    <el-input
+                        v-model="padding.bottom"
+                        style="height: 24px"
+                    />
+                  </el-form-item>
                 </div>
               </div>
-              <!-- margin left -->
+              <!-- margin right -->
               <div class="w-full h-full flex items-center bg-[#D6E4FF] col-span-1 row-span-4">
-
+                <el-input
+                    v-model="margin.right"
+                    style="width: 100%;height: 100%"
+                />
               </div>
               <div class="w-full h-full col-span-1 row-span-1" />
               <!-- margin bottom -->
               <div class="w-full h-full flex items-center bg-[#D6E4FF] col-span-8 row-span-1">
-
+                <el-form-item class="w-full h-6" label="bottom">
+                  <el-input
+                      v-model="margin.bottom"
+                      style="height: 24px"
+                  />
+                </el-form-item>
               </div>
             </div>
             <!-- 长宽编辑器 -->
@@ -125,5 +175,20 @@ function clearWidth() {
   &.is-active {
     background: #EBECF0;
   }
+}
+
+:deep(.el-form-item) {
+  margin: 0 !important;
+}
+
+:deep(.el-form-item__label) {
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+:deep(.el-input) {
+  outline: none !important;
+  border: none !important;
 }
 </style>

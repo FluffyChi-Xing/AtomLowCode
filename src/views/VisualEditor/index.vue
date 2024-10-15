@@ -51,6 +51,8 @@ const secondDrawerDisabled = ref<boolean>(true)
 const deleteCard = ref<boolean>(false)
 const deleteName = ref<string>()
 const deleteCardTitle = computed(() => `你确定要删除 ${deleteName.value} 吗？`)
+const isCreateCard = ref<boolean>(false)
+const newCardNode = ref<any>(null)
 
 function initChoice(index: string) {
   drawerChoice.value = index
@@ -138,8 +140,9 @@ function syncDelete(index: any) {
 function createCard(index: string) {
   dataSourceDrawer.value = true
   secondDrawerDisabled.value = false
-  currentCard.value.type = index
+  // currentCard.value.type = index
   dataPaneTitle.value = `创建数据源 ${index}`
+  isCreateCard.value = true
 }
 
 // 删除数据源卡片弹框
@@ -156,6 +159,12 @@ function handleConfirm(index: boolean) {
   })
 }
 
+// 新建数据源
+function handleCreate(index: any) {
+  newCardNode.value = index
+  dataSourceDrawer.value = false
+}
+
 
 watch(() => drawerChoice.value, () => {
   isExpand.value = true
@@ -168,6 +177,20 @@ function handleReset() {
   isReset.value = !isReset.value
 }
 /** ===== 页面重置-end ===== **/
+
+/** ===== 事件绑定-start ===== **/
+const deleteEvent = ref<boolean>(false)
+const deleteInfo = ref<any>(null)
+
+function handleDeleteEvent(index: any) {
+  deleteInfo.value = index
+  deleteEvent.value = true
+}
+
+function deleteCancel() {
+  deleteEvent.value = false
+}
+/** ===== 事件绑定-end ===== **/
 </script>
 
 <template>
@@ -216,6 +239,7 @@ function handleReset() {
         <DataBindPane
             :current-node="currentNode"
             :current-sec="currentSection"
+            @delete-event="handleDeleteEvent"
         />
       </div>
     </div>
@@ -262,6 +286,7 @@ function handleReset() {
         <component
             :is="currentComponent"
             :list="sectionList"
+            :newCard="newCardNode"
             @syncView="syncView"
             @syncEdit="syncEdit"
             @syncDelete="syncDelete"
@@ -287,7 +312,10 @@ function handleReset() {
         <CreateDataSourceForm
             :type="currentCard?.type"
             :data-id="currentCard?.id"
+            :card-name="currentCard?.name"
             :disabled="secondDrawerDisabled"
+            :is-create="isCreateCard"
+            @create="handleCreate"
         />
       </div>
     </el-drawer>
@@ -303,6 +331,16 @@ function handleReset() {
           一旦删除，这些数据可能会失去，请谨慎操作！
         </span>
       </template>
+    </GenerateDialog>
+    <!-- delete event dialog -->
+    <GenerateDialog
+        v-model:visible="deleteEvent"
+        :title="`你确定要删除 ${deleteInfo?.label} 的 ${deleteInfo?.event} 事件吗？`"
+        @cancel="deleteCancel"
+    >
+      <span class="text-red-500 font-bold">
+        一旦删除，这些数据可能会失去，请谨慎操作！
+      </span>
     </GenerateDialog>
   </div>
 </template>

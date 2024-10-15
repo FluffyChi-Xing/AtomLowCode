@@ -6,6 +6,7 @@ import DataPaneBreadCrumb from "@/views/VisualEditor/_components/AttriPane/_comp
 import AttributePane from "@/views/VisualEditor/_components/AttriPane/_components/AttributePane.vue";
 import EmptyPane from "@/views/VisualEditor/_components/AttriPane/_components/EmptyPane.vue";
 import StyleAttributePane from "@/views/VisualEditor/_components/AttriPane/_components/StyleAttributePane.vue";
+import EventAttriPane from "@/views/VisualEditor/_components/AttriPane/_components/EventAttriPane.vue";
 
 const props = withDefaults(defineProps<{
   currentNode?: VisualEditorComponent;
@@ -26,6 +27,7 @@ interface attributeTabTypes {
 }
 
 const highLightTab = ref<string>('attribute')
+const emits = defineEmits(['deleteEvent'])
 const currentPane = ref<any>(checkPane(highLightTab.value))
 const paneBindData = ref<any>({
   label: props.currentNode?.label,
@@ -67,6 +69,8 @@ function checkPane(item: string) {
       return AttributePane
     case 'style':
       return StyleAttributePane
+    case 'event':
+      return EventAttriPane
     default:
       return EmptyPane
   }
@@ -74,6 +78,10 @@ function checkPane(item: string) {
 
 function handleTypeChange(index: string) {
   console.log('type:', index)
+}
+
+function deleteEvent(index: any) {
+  emits('deleteEvent', index)
 }
 
 watch(() => highLightTab.value, (val) => {
@@ -127,6 +135,7 @@ watch(() => props.currentNode, () => {
             :is="currentPane"
             :data="paneBindData"
             @update:type="handleTypeChange"
+            @deleteEvent="deleteEvent"
         />
       </el-scrollbar>
     </div>

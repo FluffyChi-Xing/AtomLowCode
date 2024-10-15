@@ -58,7 +58,7 @@ function handleDelete() {
 </script>
 
 <template>
-  <div class="w-full h-20 p-2 flex rounded-[4px] box-border data-card overflow-hidden">
+  <div class="w-full h-20 p-2 flex rounded-[4px] mt-4 box-border data-card overflow-hidden">
     <!-- left info area -->
     <div class="w-1/2 h-full flex flex-col">
       <!-- data source name -->

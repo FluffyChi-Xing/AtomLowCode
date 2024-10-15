@@ -1,7 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import {ref, watch} from 'vue'
 import {DataSourceTypes} from "@/views/VisualEditor/_components/DataSourcePane/_componsables/apis/DataSourceTypes";
 import DataSourceCard from "@/views/VisualEditor/_components/DataSourcePane/_components/DataSourceCard.vue";
+
+const props = withDefaults(defineProps<{
+  newCard?: any;
+}>(), {
+
+})
+
 
 interface dataSourceTypes {
   label: string;
@@ -75,6 +82,20 @@ function createCards(index: string) {
   }
 }
 /** ===== 数据源初始化-end ===== **/
+
+/** ===== 新建数据源-start ===== **/
+function handleCreate() {
+  dataSourceList.value?.push({
+    name: props.newCard?.name,
+    type: props.newCard?.type,
+    id: dataSourceList.value.length + 1
+  })
+}
+
+watch(() => props.newCard, () => {
+  handleCreate()
+})
+/** ===== 新建数据源-end ===== **/
 </script>
 
 <template>
