@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import {ref, watch} from 'vue';
+import {onMounted, ref, watch} from 'vue';
+import initJson from '@/init.json'
 import SectionItem from "@/views/VisualEditor/_components/simulator/_components/SectionItem.vue";
 import type {SectionTypes} from "@/views/VisualEditor/_componsables/api/sectionTypes";
-import {$notify} from "@/componsabels/Element-Plus";
-import type {
-  VisualEditorComponent
-} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
-import {deleteSection, insertComponent, insertSection} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
+import {$message, $notify} from "@/componsabels/Element-Plus";
+import type {VisualEditorComponent} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
+import {
+  deleteSection,
+  insertComponent,
+  insertSection, localKey,
+  persistentSectionList
+} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
 
 
 defineOptions({
@@ -21,14 +25,7 @@ const props = withDefaults(defineProps<{
 
 const simulator = ref() // 获取模拟器容器
 
-const sectionList = ref<SectionTypes.pageSection[]>([
-  {
-    index: 1,
-    label: 'section1',
-    isShow: false,
-    component: []
-  }
-])
+const sectionList = ref<SectionTypes.pageSection[]>()
 const drag = ref<boolean>(false)
 const emits = defineEmits(['focusComp', 'currentSec', 'uploadSection'])
 
@@ -124,12 +121,42 @@ function handleClearAll(index: boolean) {
   sectionList.value = sectionList.value.splice(0, 1)
   // TODO 清除第一级 section 内的所有组件
   // sectionList.value[0].component = []
+  // 同步处理 session storage 中的数据为 initJson
+  sessionStorage.setItem(localKey, JSON.stringify(initJson))
   console.log(`页面重置${index}`, sectionList.value)
+  $message({
+    type: 'success',
+    message: '页面重置成功',
+    offset: 80
+  })
 }
 
 watch(() => props.clearAll, (val) => {
   handleClearAll(val)
 })
+
+/** ===== 页面刷新重新渲染-start ===== **/
+function pageInit() {
+  const sectionData = persistentSectionList()
+  if (sectionData) {
+    sectionList.value = sectionData
+  } else {
+    sectionList.value = [
+      {
+        index: 1,
+        label: 'section1',
+        isShow: false,
+        component: []
+      }
+    ]
+  }
+}
+
+onMounted(() => {
+  console.log('页面挂载完成')
+  pageInit();
+})
+/** ===== 页面刷新重新渲染-end ===== **/
 </script>
 
 <template>
@@ -148,8 +175,8 @@ watch(() => props.clearAll, (val) => {
           @create-section="handleCreateSection"
           @focus-section="handleFocus"
           @delete-section="handleDelete"
-          @focus-comp="handleFocusComp"
           @currentSec="getSection"
+          @focus-comp="handleFocusComp"
           @create-comp="createComponent"
       />
     </el-scrollbar>

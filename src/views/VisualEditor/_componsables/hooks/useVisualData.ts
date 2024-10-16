@@ -363,3 +363,15 @@ export function updateComponent(section: string, uuid: any, params: any) {
         setSessionStorage(localKey, newData);
     }
 }
+
+
+/**
+ * @description 获取持久化的区块列表
+ */
+export function persistentSectionList() {
+    const sessionData = JSON.parse(sessionStorage.getItem(localKey) as string);
+    if (sessionData) {
+        console.log('sessionData', sessionData.page[0].section);
+        return sessionData.page[0].section;
+    }
+}

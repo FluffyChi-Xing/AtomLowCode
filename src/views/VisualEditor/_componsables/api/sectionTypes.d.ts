@@ -1,5 +1,6 @@
-import type {VisualEditorBlockTypes} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
-import {ref} from "vue";
+import type {
+    VisualEditorComponent
+} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
 
 export namespace SectionTypes {
     /**
@@ -9,15 +10,15 @@ export namespace SectionTypes {
         index: number;
         label: string;
         isShow?: boolean;
-        component?: VisualEditorBlockTypes[];
+        component?: any[];
     }
 
     /**
-     * 创建区块
+     * 创建组件
      */
     export interface createComp {
         sectionLabel: string;
-        comp: VisualEditorBlockTypes;
+        comp: VisualEditorComponent;
     }
 
 

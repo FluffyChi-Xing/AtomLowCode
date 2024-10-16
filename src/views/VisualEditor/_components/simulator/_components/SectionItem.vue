@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, ref, watch} from 'vue';
 import DraggableTansitionGroup from "@/views/VisualEditor/_components/DraggableTansitionGroup.vue";
-import type {VisualEditorBlockTypes} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
+import type {VisualEditorComponent} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
 import {removeComponent} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
 
 
@@ -52,7 +52,7 @@ function handleDeleteComp(index: number) {
   tempList.value.splice(index, 1);
 }
 
-function handleCreateComp(comp: VisualEditorBlockTypes, label: string) {
+function handleCreateComp(comp: VisualEditorComponent, label: string) {
   emits('createComp', {
     comp: comp,
     sectionLabel: label
@@ -77,9 +77,20 @@ watch(() => focusedComp.value, (newVal, oldVal) => {
 watch(() => tempList.value, (newVal, oldVal) => {
   if (newVal.length > oldVal.length) {
     const newComp = newVal[newVal.length - 1];
+    console.log('newComp:', newComp);
     handleCreateComp(newComp, props.label);
   }
 });
+
+
+// TODO 将 session 中的组件的 preview 字符串转换为函数
+function disposePreview(element: any) {
+  const preview = element?.props?.preview;
+  // 去除 preview 字符串两边的双引号
+  const funcString = preview?.replace(/"/g, '');
+  // 创建一个新的函数
+  return new Function(`return ${funcString}`)();
+}
 </script>
 
 <template>

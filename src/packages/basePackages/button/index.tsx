@@ -8,7 +8,6 @@ import type {VisualEditorComponent} from "@/views/VisualEditor/_componsables/uti
 
 
 
-
 export default {
     key: 'button',
     moduleName: 'basePackages',
@@ -75,6 +74,7 @@ export default {
                 }
             ],
             defaultValue: false,
-        })
+        }),
+        preview: "() => <ElButton loading={false} type={'primary'}>按钮</ElButton>"
     }
 } as VisualEditorComponent
