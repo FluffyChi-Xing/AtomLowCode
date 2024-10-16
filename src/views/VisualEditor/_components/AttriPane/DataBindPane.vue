@@ -134,6 +134,7 @@ watch(() => props.currentNode, () => {
         <component
             :is="currentPane"
             :data="paneBindData"
+            :label="props.currentSec"
             @update:type="handleTypeChange"
             @deleteEvent="deleteEvent"
         />

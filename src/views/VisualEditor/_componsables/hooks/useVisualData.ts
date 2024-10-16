@@ -306,3 +306,60 @@ export function removeComponent(comp: any, index: number, label: string) {
 export function getSessionCode() {
     return JSON.parse(sessionStorage.getItem(localKey) as string || JSON.stringify(initJson));
 }
+
+
+/**
+ * @description 更新组件参数适配器
+ * @param item
+ * @param params
+ */
+function compUpdateAdaptor(item: any, params: any) {
+    const props = item?.props;
+    if (props && params) {
+        for (const key in params) {
+            if (Object.prototype.hasOwnProperty.call(params, key) && Object.prototype.hasOwnProperty.call(props, key)) {
+                props[key].defaultValue = params[key];
+                console.log('更新组件参数', props[key]);
+            }
+        }
+    }
+}
+
+/**
+ * @description 更新组件参数执行函数
+ * @param localData
+ * @param section
+ * @param uuid
+ * @param params
+ */
+function handleUpdateComp(localData: any, section: string, uuid: any, params: any) {
+    if (uuid && params) {
+        const newData = deepClone(localData);
+        const currentSection = newData.page[0].section.find((item: any) => item?.label === section);
+        const currentComp = currentSection?.component?.find((item: any) => item?.label === uuid);
+        // params 处理函数
+        compUpdateAdaptor(currentComp, params);
+        return newData;
+    }
+}
+
+
+/**
+ * @description 更新组件参数
+ * @param section
+ * @param uuid
+ * @param params
+ */
+export function updateComponent(section: string, uuid: any, params: any) {
+    const localData = JSON.parse(sessionStorage.getItem(localKey) as string);
+    if (localData) {
+        // 有 sessionStorage 逻辑
+        const newData = handleUpdateComp(localData, section, uuid, params);
+        setSessionStorage(localKey, newData);
+    } else {
+        // 无 sessionStorage 逻辑
+        const localData = JSON.parse(JSON.stringify(initJson));
+        const newData = handleUpdateComp(localData, section, uuid, params);
+        setSessionStorage(localKey, newData);
+    }
+}

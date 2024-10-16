@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from 'vue';
+import {updateComponent} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
 const props = withDefaults(defineProps<{
   data?: any;
+  label?: string;
 }>(), {
 
 })
@@ -14,6 +16,13 @@ const isLoading = ref<boolean | string>(props.data?.props?.loading?.defaultValue
 const motionBlur = ref<boolean>(props.data?.props?.motionBlur?.defaultValue);
 const height = ref<string>(props.data?.props?.height?.defaultValue);
 const direction = ref<string>(props.data?.props?.direction?.defaultValue);
+// 菜单等物料相关属性
+const defaultActive = ref<string>(props.data?.props?.defaultActive?.defaultValue);
+const activeTextColor = ref<string>(props.data?.props?.activeTextColor?.defaultValue);
+const backgroundColor = ref<string>(props.data?.props?.backgroundColor?.defaultValue);
+const textColor = ref<string>(props.data?.props?.textColor?.defaultValue);
+const mode = ref<string>(props.data?.props?.mode?.defaultValue);
+const modes = ref<any[]>(props.data?.props?.mode?.options || []);
 function clearContent() {
   componentContent.value = ''
 }
@@ -38,12 +47,39 @@ function clearDirect() {
   direction.value = ''
 }
 
+function clearDefaultAct() {
+  defaultActive.value = ''
+}
+
 function clearLoading() {
   if (props.data?.props?.loading?.options) {
     isLoading.value = ''
   } else {
     isLoading.value = false
   }
+}
+
+function handleConfirm() {
+  const data = {
+    componentContents: componentContent.value,
+    type: componentType.value,
+    closable: closable.value,
+    loading: isLoading.value,
+    motionBlur: motionBlur.value,
+    height: height.value,
+    direction: direction.value,
+    defaultActive: defaultActive.value,
+    activeTextColor: activeTextColor.value,
+    backgroundColor: backgroundColor.value,
+    textColor: textColor.value,
+    mode: mode.value
+  }
+  console.log('prop label:', props.label)
+  updateComponent(props.label, props.data?.label, data);
+}
+
+function clearMode() {
+  mode.value = ''
 }
 
 watch(() => componentType.value, () => {
@@ -177,9 +213,78 @@ watch(() => props.data, () => {
         />
       </el-select>
     </el-form-item>
+    <!-- 默认高亮项 -->
+    <el-form-item
+        v-if="defaultActive"
+        label="默认高亮"
+    >
+      <el-input
+          v-model="defaultActive"
+          clearable
+          class="w-full"
+          @clear="clearDefaultAct"
+      />
+    </el-form-item>
+    <!-- 高亮文字颜色 -->
+    <el-form-item
+        v-if="activeTextColor"
+        label="高亮文字颜色"
+    >
+      <el-color-picker
+          v-model="activeTextColor"
+          show-alpha
+      />
+    </el-form-item>
+    <!-- 背景颜色 -->
+    <el-form-item
+        v-if="backgroundColor"
+        label="背景颜色"
+    >
+      <el-color-picker
+          v-model="backgroundColor"
+          show-alpha
+      />
+    </el-form-item>
+    <!-- 文字颜色 -->
+    <el-form-item
+        v-if="textColor"
+        label="文字颜色"
+    >
+      <el-color-picker
+          v-model="textColor"
+          show-alpha
+      />
+    </el-form-item>
+    <!-- 对齐方式 -->
+    <el-form-item
+        v-if="mode"
+        label="对齐方式"
+    >
+      <el-select
+          v-model="mode"
+          clearable
+          @clear="clearMode"
+          placeholder="请选择对齐方式"
+      >
+        <el-option
+            v-for="(item, index) in modes"
+            :key="index"
+            :label="item.label"
+            :value="item.value"
+        />
+      </el-select>
+    </el-form-item>
+    <!-- 是否修改 -->
+    <el-form-item
+        label="是否修改"
+    >
+      <div class="w-full h-auto flex justify-end items-center">
+        <el-button @click="handleConfirm" class="theme-btn">确认</el-button>
+      </div>
+    </el-form-item>
   </div>
 </template>
 
 <style scoped>
-
+@import "@/assets/css/Element-Plus.scss";
 </style>

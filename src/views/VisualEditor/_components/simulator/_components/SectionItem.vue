@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<{
 
 const section = ref() // 获取容器
 const isDrag = ref<boolean>(props.drag)
-const focusedComp = ref(null);
+const focusedComp = ref(null); // 当前选中的组件
 const emits = defineEmits(['createSection', 'focusSection', 'deleteSection', 'focusComp', 'currentSec', 'createComp'])
 const tempList = ref<any[]>(props.list)
 const text = computed(() => {
@@ -73,7 +73,7 @@ watch(() => focusedComp.value, (newVal, oldVal) => {
     }
   }
 });
-// 观察新增组件, 将新组件触发新增事件
+// 观察组件, 新组件将触发新增事件
 watch(() => tempList.value, (newVal, oldVal) => {
   if (newVal.length > oldVal.length) {
     const newComp = newVal[newVal.length - 1];
