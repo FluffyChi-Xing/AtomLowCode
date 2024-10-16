@@ -23,7 +23,7 @@ onMounted(() => {
         <highlightjs
             language="json"
             :code="JSON.stringify(schemaCode, null, 2)"
-            class="text-[10px]"
+            class="text-[10px] w-full h-full"
         />
       </div>
       <div

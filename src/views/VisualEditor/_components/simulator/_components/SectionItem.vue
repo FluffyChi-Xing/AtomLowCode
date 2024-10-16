@@ -17,6 +17,7 @@ const props = withDefaults(defineProps<{
 
 const section = ref() // 获取容器
 const isDrag = ref<boolean>(props.drag)
+const focusedComp = ref(null);
 const emits = defineEmits(['createSection', 'focusSection', 'deleteSection', 'focusComp', 'currentSec', 'createComp'])
 const tempList = ref<any[]>(props.list)
 const text = computed(() => {
@@ -40,20 +41,14 @@ function handleDelete() {
 }
 
 function handleFocusComp(index: number) {
-  tempList.value = tempList.value.map((item, i) => {
-    if (i === index) {
-      emits('focusComp', item) // 当前选中的组件
-      emits('currentSec', props.label) // 当前组件所在的section
-      return { ...item, focus: true };
-    } else {
-      return { ...item, focus: false };
-    }
-  });
+  focusedComp.value = tempList.value[index];
+  emits('focusComp', focusedComp.value); // 当前选中的组件
+  emits('currentSec', props.label); // 当前组件所在的section
 }
 
 function handleDeleteComp(index: number) {
   // 同步更新到 session 中
-  removeComponent(tempList.value[index], props.label)
+  removeComponent(tempList.value[index], index, props.label)
   tempList.value.splice(index, 1);
 }
 
@@ -64,12 +59,27 @@ function handleCreateComp(comp: VisualEditorBlockTypes, label: string) {
   })
 }
 
-watch(() => tempList.value, () => {
-  // 数组最后一位为新建组件
-  if (tempList.value[tempList.value.length - 1]) {
-    handleCreateComp(tempList.value[tempList.value.length - 1], props.label)
+watch(() => focusedComp.value, (newVal, oldVal) => {
+  if (oldVal) {
+    const index = tempList.value.findIndex(item => item === oldVal);
+    if (index !== -1) {
+      tempList.value[index] = { ...oldVal, focus: false };
+    }
   }
-})
+  if (newVal) {
+    const index = tempList.value.findIndex(item => item === newVal);
+    if (index !== -1) {
+      tempList.value[index] = { ...newVal, focus: true };
+    }
+  }
+});
+// 观察新增组件, 将新组件触发新增事件
+watch(() => tempList.value, (newVal, oldVal) => {
+  if (newVal.length > oldVal.length) {
+    const newComp = newVal[newVal.length - 1];
+    handleCreateComp(newComp, props.label);
+  }
+});
 </script>
 
 <template>

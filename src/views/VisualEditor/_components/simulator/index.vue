@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref, watch} from 'vue';
+import {ref, watch} from 'vue';
 import SectionItem from "@/views/VisualEditor/_components/simulator/_components/SectionItem.vue";
 import type {SectionTypes} from "@/views/VisualEditor/_componsables/api/sectionTypes";
 import {$notify} from "@/componsabels/Element-Plus";

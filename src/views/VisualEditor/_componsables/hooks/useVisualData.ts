@@ -271,32 +271,30 @@ export function insertComponent(comp: SectionTypes.createComp) {
 }
 
 
-function handleDeleteComp(localData: any, comp: any, label: string) {
+function handleDeleteComp(localData: any, comp: any, index: number, label: string) {
     if (comp) {
-        const newData = deepClone(localData);
-        const currentSection = newData.page[0].section.find((item: any) => item?.label === label);
-        const currentComp = currentSection.component;
-        const index = currentComp.findIndex((item: any) => item?._vid === comp?._vid);
+        const currentSection = localData.page[0].section.find((item: any) => item?.label === label);
+        let currentComp = [];
+        currentComp = currentSection.component;
         if (index !== -1) { // 检查index是否不等于-1
-            currentComp.splice(index, 1);
+            currentComp?.splice(index, 1);
             console.log('sessionStorage 删除组件', currentComp);
         } else {
             console.log('未找到要删除的组件');
         }
-        return newData;
+        return localData;
     }
 }
 
-export function removeComponent(comp: any, label: string) {
+export function removeComponent(comp: any, index: number, label: string) {
     checkSession()
     const localData = JSON.parse(sessionStorage.getItem(localKey) as string);
-    console.log('session 删除', comp, label)
     if (localData) {
-        const newData = handleDeleteComp(localData, comp, label);
+        const newData = handleDeleteComp(localData, comp, index, label);
         setSessionStorage(localKey, newData)
     } else {
         const localData = JSON.parse(JSON.stringify(initJson));
-        const newData = handleDeleteComp(localData, comp, label);
+        const newData = handleDeleteComp(localData, comp, index, label);
         setSessionStorage(localKey, newData)
     }
 }
