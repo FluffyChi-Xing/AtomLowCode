@@ -6,7 +6,7 @@ import {$notify} from "@/componsabels/Element-Plus";
 import type {
   VisualEditorComponent
 } from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
-import {deleteSection, insertSection} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
+import {deleteSection, insertComponent, insertSection} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
 
 
 defineOptions({
@@ -101,6 +101,8 @@ function createComponent(item: SectionTypes.createComp) {
     if (item.sectionLabel === some.label) {
       some.component.push(item.comp)
       syncSectionList()
+      // 同步写入 session storage 中
+      insertComponent(item);
     }
   })
 }

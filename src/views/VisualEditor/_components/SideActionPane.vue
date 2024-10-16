@@ -24,7 +24,7 @@ const sideBarBtns = ref<VisualEditorTypes.canvasSizeTypes[]>([
   },
   {
     icon: More,
-    label: 'Schema',
+    label: 'schema',
     value: 'schema'
   }
 ])

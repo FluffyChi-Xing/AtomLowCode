@@ -13,6 +13,7 @@ import DataSourcePane from '@/views/VisualEditor/_components/DataSourcePane/inde
 import {DataSourceTypes} from "@/views/VisualEditor/_components/DataSourcePane/_componsables/apis/DataSourceTypes";
 import CreateDataSourceForm from "@/views/VisualEditor/_components/createDataSourceForm.vue";
 import GenerateDialog from "@/components/GenerateDialog.vue";
+import SchemaPane from '@/views/VisualEditor/_components/SchemaPane/index.vue'
 import {$message} from "@/componsabels/Element-Plus";
 
 
@@ -83,7 +84,7 @@ function checkComponent(index: string) {
     case 'schema':
       title.value = 'Schema'
           placeholder.value = '请输入Schema名称'
-          currentComponent.value = ''
+          currentComponent.value = SchemaPane
           break;
   }
 }

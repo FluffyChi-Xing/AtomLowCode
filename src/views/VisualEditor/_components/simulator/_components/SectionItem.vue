@@ -2,7 +2,7 @@
 import {computed, ref, watch} from 'vue';
 import DraggableTansitionGroup from "@/views/VisualEditor/_components/DraggableTansitionGroup.vue";
 import type {VisualEditorBlockTypes} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
-import {SectionTypes} from "@/views/VisualEditor/_componsables/api/sectionTypes";
+import {removeComponent} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
 
 
 const props = withDefaults(defineProps<{
@@ -40,7 +40,6 @@ function handleDelete() {
 }
 
 function handleFocusComp(index: number) {
-  console.log('tempList:', tempList.value)
   tempList.value = tempList.value.map((item, i) => {
     if (i === index) {
       emits('focusComp', item) // 当前选中的组件
@@ -53,11 +52,12 @@ function handleFocusComp(index: number) {
 }
 
 function handleDeleteComp(index: number) {
-  // console.log('删除了', tempList.value[index].key)
+  // 同步更新到 session 中
+  removeComponent(tempList.value[index], props.label)
   tempList.value.splice(index, 1);
 }
 
-function handleCreateComp(comp: SectionTypes.createComp, label: string) {
+function handleCreateComp(comp: VisualEditorBlockTypes, label: string) {
   emits('createComp', {
     comp: comp,
     sectionLabel: label
@@ -66,7 +66,9 @@ function handleCreateComp(comp: SectionTypes.createComp, label: string) {
 
 watch(() => tempList.value, () => {
   // 数组最后一位为新建组件
-  handleCreateComp(tempList.value[tempList.value.length - 1], props.label)
+  if (tempList.value[tempList.value.length - 1]) {
+    handleCreateComp(tempList.value[tempList.value.length - 1], props.label)
+  }
 })
 </script>
 

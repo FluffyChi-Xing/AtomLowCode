@@ -135,6 +135,20 @@ export function initVisualData() {
     // 删除页面
 }
 
+
+function deepClone(item: any) {
+    return JSON.parse(JSON.stringify(item))
+}
+
+function checkSession() {
+    try {
+        JSON.parse(JSON.stringify(localKey));
+    } catch (e) {
+        sessionStorage.clear(localKey)
+        console.log('session storage 错误',e)
+    }
+}
+
 /**
  * @description 创建区块执行函数
  * @param localData
@@ -142,7 +156,7 @@ export function initVisualData() {
  */
 function createSection(localData: any, section: any) {
     // 创建 localData 的深拷贝
-    const newData = JSON.parse(JSON.stringify(localData));
+    const newData = deepClone(localData);
     // 向 newData.page[0].section 添加新的 section
     newData.page[0].section?.push(section);
     console.log('sessionStorage', newData);
@@ -165,6 +179,7 @@ function setSessionStorage(key: any, value: any) {
  * @param section
  */
 export function insertSection(section?: SectionTypes.pageSection) {
+    checkSession()
     let localData = JSON.parse(sessionStorage.getItem(localKey) as string);
     if (localData) {
         if (section) {
@@ -189,7 +204,7 @@ export function insertSection(section?: SectionTypes.pageSection) {
  * @param section
  */
 function spliceSection(localData: any, section: string) {
-    const newData = JSON.parse(JSON.stringify(localData));
+    const newData = deepClone(localData);
     const index = newData.page[0].section?.findIndex((item: any) => item?.label === section);
     if (index !== undefined && index !== -1) {
         newData.page[0].section?.splice(index, 1);
@@ -203,6 +218,7 @@ function spliceSection(localData: any, section: string) {
  * @param section
  */
 export function deleteSection(section: any) {
+    checkSession()
     let localData = JSON.parse(sessionStorage.getItem(localKey) as string);
     if (localData) {
         if (section) {
@@ -216,4 +232,79 @@ export function deleteSection(section: any) {
             setSessionStorage(localKey, newData);
         }
     }
+}
+
+
+/**
+ * @description 创建组件执行函数
+ * @param localData
+ * @param comp
+ */
+function handleCreateComp(localData: any, comp: any) {
+    if (comp !== null && comp !== undefined) {
+        // 深拷贝 localData
+        const newData = deepClone(localData);
+        // 获取当前的 section list
+        const currentSection = newData.page[0].section.find((item: any) => item?.label === comp?.sectionLabel);
+        currentSection.component?.push(comp?.comp);
+        console.log('sessionStorage 插入组件', newData);
+        return newData;
+    }
+}
+
+
+/**
+ * @description 插入组件
+ * @param comp
+ */
+export function insertComponent(comp: SectionTypes.createComp) {
+    checkSession()
+    const localData = JSON.parse(sessionStorage.getItem(localKey) as string);
+    if (localData) {
+        const newData = handleCreateComp(localData, comp);
+        setSessionStorage(localKey, newData); // 更新sessionStorage
+    } else {
+        const localData = JSON.parse(JSON.stringify(initJson));
+        const newData = handleCreateComp(localData, comp);
+        setSessionStorage(localKey, newData); // 创建sessionStorage
+    }
+}
+
+
+function handleDeleteComp(localData: any, comp: any, label: string) {
+    if (comp) {
+        const newData = deepClone(localData);
+        const currentSection = newData.page[0].section.find((item: any) => item?.label === label);
+        const currentComp = currentSection.component;
+        const index = currentComp.findIndex((item: any) => item?._vid === comp?._vid);
+        if (index !== -1) { // 检查index是否不等于-1
+            currentComp.splice(index, 1);
+            console.log('sessionStorage 删除组件', currentComp);
+        } else {
+            console.log('未找到要删除的组件');
+        }
+        return newData;
+    }
+}
+
+export function removeComponent(comp: any, label: string) {
+    checkSession()
+    const localData = JSON.parse(sessionStorage.getItem(localKey) as string);
+    console.log('session 删除', comp, label)
+    if (localData) {
+        const newData = handleDeleteComp(localData, comp, label);
+        setSessionStorage(localKey, newData)
+    } else {
+        const localData = JSON.parse(JSON.stringify(initJson));
+        const newData = handleDeleteComp(localData, comp, label);
+        setSessionStorage(localKey, newData)
+    }
+}
+
+
+/**
+ * @description 获取 sessionStorage
+ */
+export function getSessionCode() {
+    return JSON.parse(sessionStorage.getItem(localKey) as string || JSON.stringify(initJson));
 }
