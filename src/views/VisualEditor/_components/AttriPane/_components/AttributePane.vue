@@ -131,6 +131,7 @@ watch(() => props.data, () => {
           placeholder="请输入组件内容"
           class="w-full"
           @clear="clearContent"
+          disabled
       />
     </el-form-item>
     <!-- 组件类型 -->
@@ -171,7 +172,7 @@ watch(() => props.data, () => {
     </el-form-item>
     <!-- 加载状态 -->
     <el-form-item
-        v-if="!props.data?.props?.loading?.options"
+        v-if="props.data?.props?.loading"
         label="加载状态"
     >
       <el-switch

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import type {VisualEditorTypes} from "@/views/VisualEditor/_componsables/api/visualEditorTypes";
-import {Coin, Menu, More, Operation} from "@element-plus/icons-vue";
+import {Coin, Menu, More, Operation, Plus} from "@element-plus/icons-vue";
 
 
 
-const emits = defineEmits(['expand'])
+const emits = defineEmits(['expand', 'newPage'])
 const sideBarBtns = ref<VisualEditorTypes.canvasSizeTypes[]>([
   {
     icon: Operation,
@@ -32,11 +32,16 @@ const sideBarBtns = ref<VisualEditorTypes.canvasSizeTypes[]>([
 function handleClick(index: string) {
   emits('expand', index)
 }
+
+
+function createNewPage() {
+  emits('newPage')
+}
 </script>
 
 <template>
   <div class="w-full h-full flex py-5 side-pane box-border flex-col z-[3999] justify-between bg-white">
-    <!-- top function button group -->
+    <!-- top functional button group -->
     <div class="w-full h-auto flex items-center flex-col">
 
       <el-tooltip
@@ -54,6 +59,22 @@ function handleClick(index: string) {
           <el-icon>
             <component :is="item.icon" />
           </el-icon>
+        </el-button>
+      </el-tooltip>
+    </div>
+    <!-- bottom functional btn group -->
+    <div class="w-full h-auto flex items-center flex-col mt-auto">
+      <el-tooltip
+          effect="dark"
+          content="新增页面"
+          placement="right"
+      >
+        <el-button
+            type="text"
+            class="w-9 h-9 flex"
+            @click="createNewPage"
+        >
+          <el-icon><component :is="Plus" /></el-icon>
         </el-button>
       </el-tooltip>
     </div>

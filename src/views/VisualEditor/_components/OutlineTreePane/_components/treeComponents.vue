@@ -7,10 +7,12 @@ const props = withDefaults(defineProps<{
   accordion?: boolean,
   expandAll?: boolean;
   showBox?: boolean;
+  draggable?: boolean;
 }>(), {
   accordion: false,
   expandAll: true,
-  showBox: true
+  showBox: true,
+  draggable: false
 })
 
 const treeData = ref<OutlineTreeTypes.treeLabelTypes[]>([]);
@@ -79,6 +81,7 @@ watch(() => props.list, () => {
         :data="treeData"
         :props="defaultProps"
         :accordion="accordion"
+        :draggable="draggable"
         :default-expand-all="expandAll"
         :show-checkbox="showBox"
         @check-change="getCheckedNode"

@@ -192,6 +192,21 @@ function deleteCancel() {
   deleteEvent.value = false
 }
 /** ===== 事件绑定-end ===== **/
+
+/** ===== 新建页面-start ===== **/
+const createPage = ref<boolean>(false)
+function handleCreatePage() {
+  createPage.value = true
+}
+
+function createCancel() {
+  createPage.value = false
+}
+
+function confirmNewPage() {
+  createPage.value = false
+}
+/** ===== 新建页面-end ===== **/
 </script>
 
 <template>
@@ -212,6 +227,7 @@ function deleteCancel() {
       <div class="w-12 h-full flex absolute left-0 bg-white">
         <SideActionPane
             @expand="initChoice"
+            @new-page="handleCreatePage"
         />
       </div>
       <div
@@ -343,6 +359,17 @@ function deleteCancel() {
       <span class="text-red-500 font-bold">
         一旦删除，这些数据可能会失去，请谨慎操作！
       </span>
+    </GenerateDialog>
+    <!-- 新增页面弹窗 -->
+    <GenerateDialog
+        v-model:visible="createPage"
+        title="新建页面"
+        @cancel="createCancel"
+        @confirm="confirmNewPage"
+    >
+      <template #main>
+        <span class="text-red-500 font-bold">新建页面窗口</span>
+      </template>
     </GenerateDialog>
   </div>
 </template>
