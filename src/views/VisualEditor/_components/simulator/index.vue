@@ -85,8 +85,18 @@ function handleDelete(label: string) {
   }
 }
 
-function handleFocusComp(comp: VisualEditorComponent) {
-  emits('focusComp', comp)
+function handleFocusComp(item: SectionTypes.createComp) {
+  // 去除无关 section 中的 component 的 focus 状态
+  console.log('section component 高亮处理:', sectionList.value)
+  sectionList.value?.forEach((section: SectionTypes.pageSection) => {
+    if (section.label !== item.sectionLabel) {
+      section?.component?.forEach((comp: VisualEditorComponent) => {
+        comp.focus = false
+        console.log('非当前 section 中的组件清除 focus 状态')
+      })
+    }
+  })
+  emits('focusComp', item.comp)
 }
 
 function getSection(index: string) {
@@ -118,12 +128,12 @@ function syncSectionList() {
  * @param index
  */
 function handleClearAll(index: boolean) {
-  sectionList.value = sectionList.value.splice(0, 1)
   // TODO 清除第一级 section 内的所有组件
-  // sectionList.value[0].component = []
+
+  sectionList.value.splice(0, sectionList.value.length - 1)
+  sectionList.value[0].component = []
   // 同步处理 session storage 中的数据为 initJson
   sessionStorage.setItem(localKey, JSON.stringify(initJson))
-  console.log(`页面重置${index}`, sectionList.value)
   $message({
     type: 'success',
     message: '页面重置成功',
@@ -172,6 +182,7 @@ onMounted(() => {
           :list="sectionList[index]?.component"
           :drag="drag"
           :is-show="item.isShow"
+          :clear="props.clearAll"
           @create-section="handleCreateSection"
           @focus-section="handleFocus"
           @delete-section="handleDelete"

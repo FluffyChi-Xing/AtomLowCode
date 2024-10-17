@@ -29,10 +29,7 @@ interface attributeTabTypes {
 const highLightTab = ref<string>('attribute')
 const emits = defineEmits(['deleteEvent'])
 const currentPane = ref<any>(checkPane(highLightTab.value))
-const paneBindData = ref<any>({
-  label: props.currentNode?.label,
-  props: props.currentNode?.props,
-})
+const paneBindData = ref<any>(props.currentNode)
 const attriTabList = ref<attributeTabTypes[]>([
   {
     index: 1,

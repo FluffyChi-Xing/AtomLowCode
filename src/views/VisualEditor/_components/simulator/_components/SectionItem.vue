@@ -10,6 +10,7 @@ const props = withDefaults(defineProps<{
   drag?: boolean;
   label?: string;
   isShow?: boolean;
+  clear?: boolean;
 }>(), {
   isShow: false
 })
@@ -42,7 +43,10 @@ function handleDelete() {
 
 function handleFocusComp(index: number) {
   focusedComp.value = tempList.value[index];
-  emits('focusComp', focusedComp.value); // 当前选中的组件
+  emits('focusComp', {
+    comp: focusedComp.value,
+    label: props.label
+  }); // 当前选中的组件
   emits('currentSec', props.label); // 当前组件所在的section
 }
 
@@ -62,6 +66,8 @@ function handleCreateComp(comp: VisualEditorComponent, label: string) {
 watch(() => focusedComp.value, (newVal, oldVal) => {
   if (oldVal) {
     const index = tempList.value.findIndex(item => item === oldVal);
+    // 先将所有的 focus 状态置为 false
+    tempList.value.forEach(item => item.focus = false);
     if (index !== -1) {
       tempList.value[index] = { ...oldVal, focus: false };
     }
@@ -81,6 +87,10 @@ watch(() => tempList.value, (newVal, oldVal) => {
     handleCreateComp(newComp, props.label);
   }
 });
+
+watch(() => props.clear, () => {
+  tempList.value = [];
+})
 
 
 // TODO 将 session 中的组件的 preview 字符串转换为函数

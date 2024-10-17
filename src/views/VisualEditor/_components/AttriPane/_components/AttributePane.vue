@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from 'vue';
 import {updateComponent} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
+import {$message} from "@/componsabels/Element-Plus";
 const props = withDefaults(defineProps<{
   data?: any;
   label?: string;
@@ -30,6 +31,16 @@ function clearContent() {
 function initData() {
   componentContent.value = props.data?.label
   componentType.value = props.data?.props?.type?.defaultValue
+  closable.value = props.data?.props?.closable?.defaultValue
+  isLoading.value = props.data?.props?.loading?.defaultValue
+  motionBlur.value = props.data?.props?.motionBlur?.defaultValue
+  height.value = props.data?.props?.height?.defaultValue
+  direction.value = props.data?.props?.direction?.defaultValue
+  defaultActive.value = props.data?.props?.defaultActive?.defaultValue
+  activeTextColor.value = props.data?.props?.activeTextColor?.defaultValue
+  backgroundColor.value = props.data?.props?.backgroundColor?.defaultValue
+  textColor.value = props.data?.props?.textColor?.defaultValue
+  mode.value = props.data?.props?.mode?.defaultValue
 }
 
 function changeType() {
@@ -75,7 +86,20 @@ function handleConfirm() {
     mode: mode.value
   }
   console.log('prop label:', props.label)
-  updateComponent(props.label, props.data?.label, data);
+  try {
+    updateComponent(props.label, props.data?.label, data);
+    $message({
+      type: 'success',
+      message: '更新成功',
+      offset: 80
+    })
+  } catch (e) {
+    $message({
+      type: 'danger',
+      message: '更新失败',
+      offset: 80
+    })
+  }
 }
 
 function clearMode() {

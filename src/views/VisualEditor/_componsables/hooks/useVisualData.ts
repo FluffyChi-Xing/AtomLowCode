@@ -4,6 +4,7 @@ import type {
     VisualEditorModelValue, VisualEditorPage, VisualEditorSection
 } from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
 import {SectionTypes} from "@/views/VisualEditor/_componsables/api/sectionTypes";
+import {$message} from "@/componsabels/Element-Plus";
 
 
 export const localKey = "PAGE_DATE_KEY"
@@ -246,7 +247,12 @@ function handleCreateComp(localData: any, comp: any) {
         const newData = deepClone(localData);
         // 获取当前的 section list
         const currentSection = newData.page[0].section.find((item: any) => item?.label === comp?.sectionLabel);
-        currentSection.component?.push(comp?.comp);
+        try {
+            currentSection.component?.push(comp?.comp);
+        } catch (e) {
+            console.log('插入组件错误', e);
+            $message.error('插入组件错误');
+        }
         console.log('sessionStorage 插入组件', newData);
         return newData;
     }
@@ -275,7 +281,7 @@ function handleDeleteComp(localData: any, comp: any, index: number, label: strin
     if (comp) {
         const currentSection = localData.page[0].section.find((item: any) => item?.label === label);
         let currentComp = [];
-        currentComp = currentSection.component;
+        currentComp = currentSection?.component;
         if (index !== -1) { // 检查index是否不等于-1
             currentComp?.splice(index, 1);
             console.log('sessionStorage 删除组件', currentComp);
