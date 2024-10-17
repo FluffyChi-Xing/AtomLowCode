@@ -4,6 +4,7 @@ import LayoutComponent from '../LayoutComponent/index.vue'
 import FormComponent from '../FormComponent/index.vue'
 import chartsComponent from '../ChartComponent/index.vue'
 import blockComponent from '../BlockComponent/index.vue'
+import businessComponent from "../BusinessComponent/index.vue";
 const props = withDefaults(defineProps<{
   componentName?: string;
 }>(), {
@@ -17,7 +18,7 @@ function checkComponent(index: string) {
     case 'chart':
       return chartsComponent
     case 'business':
-      return ''
+      return businessComponent
     case 'layout':
       return LayoutComponent
     case 'form':
