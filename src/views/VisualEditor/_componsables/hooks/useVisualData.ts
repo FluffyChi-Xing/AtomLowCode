@@ -160,6 +160,8 @@ function createSection(localData: any, section: any) {
     const newData = deepClone(localData);
     // 向 newData.page[0].section 添加新的 section
     newData.page[0].section?.push(section);
+    // 保存数据到操作栈
+    saveProgress(section);
     console.log('sessionStorage', newData);
     // 返回 newData
     return newData;
@@ -249,6 +251,8 @@ function handleCreateComp(localData: any, comp: any) {
         const currentSection = newData.page[0].section.find((item: any) => item?.label === comp?.sectionLabel);
         try {
             currentSection.component?.push(comp?.comp);
+            // 保存到操作栈
+            saveProgress(comp?.comp);
         } catch (e) {
             console.log('插入组件错误', e);
             $message.error('插入组件错误');
@@ -381,3 +385,61 @@ export function persistentSectionList() {
         return sessionData.page[0].section;
     }
 }
+
+
+/**
+ * @description 操作栈
+ */
+class progressStack {
+    private items: any[] = [];
+    // 入栈
+    push(item: any) {
+        this.items.push(item);
+    }
+    // 出栈
+    pop(): any {
+        return this.items.pop();
+    }
+    // 是否栈空
+    isEmpty() {
+        return this.items.length === 0;
+    }
+    // 容量
+    size() {
+        return this.items.length;
+    }
+    // 清空栈
+    clear() {
+        this.items = [];
+    }
+    // 获取栈顶元素
+    getTop() {
+        return this.items[this.items.length - 1];
+    }
+}
+
+
+/**
+ * @description 进度栈
+ */
+const proStack = new progressStack();
+/**
+ * @description 保存进度
+ * @param item
+ */
+function saveProgress(item: any) {
+    proStack.push(item);
+    console.log('进度栈', proStack);
+}
+
+/**
+ * @description 撤销进度
+ * @param item
+ */
+function removeProgress(item: any) {
+    proStack.pop();
+    console.log('进度栈', proStack);
+}
+
+
+// TODO 大纲树应该使用 session storage 进行渲染

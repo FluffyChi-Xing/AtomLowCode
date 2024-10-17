@@ -12,6 +12,7 @@ const props = withDefaults(defineProps<{
   currentNode?: VisualEditorComponent;
   currentSec?: string;
   currentPage?: string;
+  isReset?: boolean;
 }>(), {
   currentPage: 'page1'
 })
@@ -30,6 +31,7 @@ const highLightTab = ref<string>('attribute')
 const emits = defineEmits(['deleteEvent'])
 const currentPane = ref<any>(checkPane(highLightTab.value))
 const paneBindData = ref<any>(props.currentNode)
+const currentNode = ref<any>(props.currentNode)
 const attriTabList = ref<attributeTabTypes[]>([
   {
     index: 1,
@@ -86,7 +88,13 @@ watch(() => highLightTab.value, (val) => {
 })
 
 watch(() => props.currentNode, () => {
+  currentNode.value = props.currentNode
   initPaneData()
+})
+
+
+watch(() => props.isReset, () => {
+  currentNode.value = null
 })
 </script>
 

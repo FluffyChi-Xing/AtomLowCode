@@ -238,6 +238,7 @@ function deleteCancel() {
       <!-- 数据绑定 -->
       <div class="w-[300px] fixed right-0 h-full flex">
         <DataBindPane
+            :is-reset="isReset"
             :current-node="currentNode"
             :current-sec="currentSection"
             @delete-event="handleDeleteEvent"
