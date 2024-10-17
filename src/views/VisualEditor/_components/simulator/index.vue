@@ -125,11 +125,8 @@ function syncSectionList() {
 
 /**
  * 页面重置
- * @param index
  */
-function handleClearAll(index: boolean) {
-  // TODO 清除第一级 section 内的所有组件
-
+function handleClearAll() {
   sectionList.value.splice(0, sectionList.value.length - 1)
   sectionList.value[0].component = []
   // 同步处理 session storage 中的数据为 initJson
@@ -141,8 +138,8 @@ function handleClearAll(index: boolean) {
   })
 }
 
-watch(() => props.clearAll, (val) => {
-  handleClearAll(val)
+watch(() => props.clearAll, () => {
+  handleClearAll()
 })
 
 /** ===== 页面刷新重新渲染-start ===== **/
@@ -163,7 +160,6 @@ function pageInit() {
 }
 
 onMounted(() => {
-  console.log('页面挂载完成')
   pageInit();
 })
 /** ===== 页面刷新重新渲染-end ===== **/

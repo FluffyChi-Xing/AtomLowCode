@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import {SectionTypes} from "@/views/VisualEditor/_componsables/api/sectionTypes";
 import {onMounted, ref, watch} from 'vue';
 import {OutlineTreeTypes} from "@/views/VisualEditor/_components/OutlineTreePane/_componsables/apis/outlineTreeTypes";
 
 const props = withDefaults(defineProps<{
-  list?: SectionTypes.pageSection[],
+  list?: any,
   accordion?: boolean,
   expandAll?: boolean;
   showBox?: boolean;
@@ -14,28 +13,43 @@ const props = withDefaults(defineProps<{
   showBox: true
 })
 
-const treeData = ref<OutlineTreeTypes.treeLabelTypes[]>([
-  {
-    label: 'page1',
-    children: []
-  }
-]);
+const treeData = ref<OutlineTreeTypes.treeLabelTypes[]>([]);
 
-function exchangeList(item: SectionTypes.pageSection[] | []) {
-  if (item?.length) {
-    let sectionList = [];
-    item.forEach((thing: SectionTypes.pageSection) => {
-      sectionList.push({
-        label: thing.label,
-        children: thing.component?.map((comp: any) => {
-          return {
-            label: comp?.label ? comp.label : '--',
-            children: null
-          }
-        })
+/**
+ * 处理大纲树 page 级数据
+ * @param item
+ */
+function exchangeList(item: any) {
+  console.log('exchangeList', item?.section)
+  if (item) {
+    const list = [];
+    list.push({
+      label: item?.title, // page 级别
+      children: disposeList(item?.section)
+    })
+    return list;
+  } else {
+    return [];
+  }
+}
+
+
+/**
+ * 处理大纲树 section 级及以下数据
+ * @param section
+ */
+function disposeList(section: any[]) {
+  if (section?.length) {
+    let list = [];
+    section?.forEach((item: any) => {
+      list.push({
+        label: item?.label,
+        children: disposeList(item?.component)
       })
     })
-    return sectionList;
+    return list
+  } else {
+    return []
   }
 }
 
@@ -50,12 +64,12 @@ function getCheckedNode(index: OutlineTreeTypes.treeLabelTypes) {
 }
 
 onMounted(() => {
-  treeData.value[0].children = exchangeList(props.list);
-  // console.log('treePaneChange', props.list)
+  treeData.value = exchangeList(props.list);
 })
 
-watch(() => props.list, (val) => {
-  treeData.value[0].children = exchangeList(val);
+
+watch(() => props.list, () => {
+  treeData.value = exchangeList(props.list);
 })
 </script>
 

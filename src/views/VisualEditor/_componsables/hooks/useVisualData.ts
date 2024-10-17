@@ -440,6 +440,3 @@ function removeProgress(item: any) {
     proStack.pop();
     console.log('进度栈', proStack);
 }
-
-
-// TODO 大纲树应该使用 session storage 进行渲染
