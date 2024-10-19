@@ -24,6 +24,7 @@ const backgroundColor = ref<string>(props.data?.props?.backgroundColor?.defaultV
 const textColor = ref<string>(props.data?.props?.textColor?.defaultValue);
 const mode = ref<string>(props.data?.props?.mode?.defaultValue);
 const modes = ref<any[]>(props.data?.props?.mode?.options || []);
+const image = ref<string>(props?.data?.props?.image?.defaultValue);
 function clearContent() {
   componentContent.value = ''
 }
@@ -41,6 +42,7 @@ function initData() {
   backgroundColor.value = props.data?.props?.backgroundColor?.defaultValue
   textColor.value = props.data?.props?.textColor?.defaultValue
   mode.value = props.data?.props?.mode?.defaultValue
+  image.value = props?.data?.props?.image?.defaultValue
 }
 
 function changeType() {
@@ -70,6 +72,10 @@ function clearLoading() {
   }
 }
 
+function clearImage() {
+  image.value = ''
+}
+
 function handleConfirm() {
   const data = {
     componentContents: componentContent.value,
@@ -83,7 +89,8 @@ function handleConfirm() {
     activeTextColor: activeTextColor.value,
     backgroundColor: backgroundColor.value,
     textColor: textColor.value,
-    mode: mode.value
+    mode: mode.value,
+    image: image.value
   }
   console.log('prop label:', props.label)
   try {
@@ -298,6 +305,19 @@ watch(() => props.data, () => {
             :value="item.value"
         />
       </el-select>
+    </el-form-item>
+    <!-- 图片组件图源配置 -->
+    <el-form-item
+        v-if="props.data?.props?.image"
+        label="图源配置"
+    >
+      <el-input
+          v-model="image"
+          clearable
+          placeholder="请输入图源"
+          class="w-full"
+          @clear="clearImage"
+      />
     </el-form-item>
     <!-- 是否修改 -->
     <el-form-item
