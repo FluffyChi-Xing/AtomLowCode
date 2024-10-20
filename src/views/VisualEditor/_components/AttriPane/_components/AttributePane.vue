@@ -31,6 +31,9 @@ const background = ref<boolean>(props.data?.props?.background?.defaultValue);
 // 其他通用属性
 const size = ref<string>(props.data?.props?.size?.defaultValue);
 const description = ref<string>(props.data?.props?.description?.defaultValue);
+const fit = ref<string>(props.data?.props?.fit?.defaultValue);
+const alt = ref<string>(props.data?.props?.alt?.defaultValue);
+const underline = ref<boolean>(props.data?.props?.underline?.defaultValue);
 function clearContent() {
   componentContent.value = ''
 }
@@ -54,6 +57,9 @@ function initData() {
   background.value = props.data?.props?.background?.defaultValue
   size.value = props.data?.props?.size?.defaultValue
   description.value = props.data?.props?.description?.defaultValue
+  fit.value = props.data?.props?.fit?.defaultValue
+  alt.value = props.data?.props?.alt?.defaultValue
+  underline.value = props.data?.props?.underline?.defaultValue
 }
 
 function changeType() {
@@ -77,6 +83,14 @@ function clearDefaultAct() {
 
 function sizeClear() {
   size.value = ''
+}
+
+function clearFit() {
+  fit.value = ''
+}
+
+function clearAlt() {
+  alt.value = ''
 }
 
 function clearLoading() {
@@ -118,7 +132,10 @@ function handleConfirm() {
     animated: animated.value,
     background: background.value,
     size: size.value,
-    description: description.value
+    description: description.value,
+    fit: fit.value,
+    alt: alt.value,
+    underline: underline.value
   }
   console.log('prop label:', props.label)
   try {
@@ -204,6 +221,15 @@ watch(() => props.data, () => {
             :value="item.value"
         />
       </el-select>
+    </el-form-item>
+    <!-- 是否下划线 -->
+    <el-form-item
+        v-if="props.data?.props?.underline"
+        label="是否下划线"
+    >
+      <el-switch
+          v-model="underline"
+      />
     </el-form-item>
     <!-- 加载状态 -->
     <el-form-item
@@ -315,6 +341,19 @@ watch(() => props.data, () => {
           show-alpha
       />
     </el-form-item>
+    <!-- 图片提示 -->
+    <el-form-item
+        v-if="props.data?.props?.alt"
+        label="图片提示"
+    >
+      <el-input
+          v-model="alt"
+          clearable
+          placeholder="请输入图片提示"
+          @clear="clearAlt"
+          class="w-full"
+      />
+    </el-form-item>
     <!-- 对齐方式 -->
     <el-form-item
         v-if="mode"
@@ -410,6 +449,26 @@ watch(() => props.data, () => {
           placeholder="请输入描述内容"
           class="w-full"
       />
+    </el-form-item>
+    <!-- 填充方式 -->
+    <el-form-item
+        v-if="props.data?.props?.fit"
+        label="填充方式"
+    >
+      <el-select
+          v-model="fit"
+          clearable
+          @clear="clearFit"
+          placeholder="请选择填充方式"
+          placement="bottom"
+      >
+        <el-option
+            v-for="(item, index) in props.data?.props?.fit?.options"
+            :key="index"
+            :label="item.label"
+            :value="item.value"
+        />
+      </el-select>
     </el-form-item>
     <!-- 是否修改 -->
     <el-form-item

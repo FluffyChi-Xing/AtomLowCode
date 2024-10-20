@@ -7,7 +7,7 @@ export default {
     key: 'link',
     moduleName: 'basePackages',
     label: '链接',
-    preview: () => <ElLink type={'primary'}>链接</ElLink>,
+    preview: () => <ElLink underline={false} type={'primary'}>链接</ElLink>,
     render: ({ props, block, styles}) => {
         const { registerRef } = useGlobalProperties();
 
@@ -51,6 +51,20 @@ export default {
                 }
             ],
             defaultValue: 'primary',
+        }),
+        underline: createEditorSelectProp({
+            label: '是否显示下划线',
+            options: [
+                {
+                    label: '显示',
+                    value: true,
+                },
+                {
+                    label: '隐藏',
+                    value: false,
+                }
+            ],
+            defaultValue: false,
         })
     },
 } as VisualEditorComponent
