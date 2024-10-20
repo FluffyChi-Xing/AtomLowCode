@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import {computed, ref, watch} from 'vue'
+import {computed, onMounted, ref, watch} from 'vue'
+import initJson from '@/init.json'
 import ActionPane from "@/views/VisualEditor/_components/ActionPane.vue";
 import SideActionPane from "@/views/VisualEditor/_components/SideActionPane.vue";
 import Simulator from './_components/simulator/index.vue'
@@ -15,6 +16,7 @@ import CreateDataSourceForm from "@/views/VisualEditor/_components/createDataSou
 import GenerateDialog from "@/components/GenerateDialog.vue";
 import SchemaPane from '@/views/VisualEditor/_components/SchemaPane/index.vue'
 import {$message} from "@/componsabels/Element-Plus";
+import {localKey} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
 
 
 /** ===== 画布尺寸调节-start ===== **/
@@ -61,6 +63,16 @@ function initChoice(index: string) {
   isExpand.value = true
   if (index !== 'dataSource') {
     dataSourceDrawer.value = false
+  }
+}
+
+function checkSize() {
+  const localData = JSON.parse(sessionStorage.getItem(localKey) as string || JSON.stringify(initJson))
+  const size = localData.page[0]?.size
+  if (size) {
+    canvasSize.value = size?.width // 记录中的画布宽度
+  } else {
+    canvasSize.value = 1100 // 默认画布宽度
   }
 }
 
@@ -169,6 +181,10 @@ function handleCreate(index: any) {
 
 watch(() => drawerChoice.value, () => {
   isExpand.value = true
+})
+
+onMounted(() => {
+  checkSize()
 })
 /** ===== 侧边抽屉-end ===== **/
 

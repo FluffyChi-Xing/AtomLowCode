@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import {ref, watch} from 'vue';
+import {onMounted, ref, watch} from 'vue';
 import type {VisualEditorTypes} from "@/views/VisualEditor/_componsables/api/visualEditorTypes";
 import {Cellphone, Iphone, Monitor, RefreshLeft, RefreshRight} from "@element-plus/icons-vue";
 import {$message} from "@/componsabels/Element-Plus";
+import {localKey, syncSize} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
 
 
 
-const emits = defineEmits(['sizeChange', 'resetPage'])
+const emits = defineEmits(['sizeChange', 'resetPage', 'preview'])
 /** ====== 画布尺寸调整-start ===== */
 const reactSize = ref<string>('pc');
 const sizeNumber = ref<number>(device2px(reactSize.value));
@@ -38,11 +39,52 @@ function device2px(item: string) {
   }
 }
 
+function device2string(item: number) {
+  switch (item) {
+    case 1100:
+      reactSize.value = 'pc';
+      sizeNumber.value = 1100;
+      break;
+    case 768:
+      reactSize.value = 'pad';
+      sizeNumber.value = 768;
+      break;
+    case 375:
+      reactSize.value = 'phone';
+      sizeNumber.value = 375;
+      break;
+    default:
+      reactSize.value = 'pc';
+      sizeNumber.value = 1100;
+  }
+}
+
+function checkSize() {
+  const localData = JSON.parse(sessionStorage.getItem(localKey))
+  // 如果本地存储有数据
+  console.log('localData', localData)
+  if (localData) {
+    const size = localData.page[0]?.size;
+    device2string(size?.width)
+    // 如果本地存储没有数据
+  } else {
+    reactSize.value = 'pc'
+  }
+}
+
 function handleSizeChange() {
   emits('sizeChange', sizeNumber.value)
+  syncSize({
+    width: sizeNumber.value,
+    height: 'auto'
+  })
 }
 watch(() => reactSize.value, (val) => {
   sizeNumber.value = device2px(val);
+})
+
+onMounted(() => {
+  checkSize()
 })
 /** ====== 画布尺寸调整-end ===== */
 
@@ -66,6 +108,12 @@ function resetPage() {
   emits('resetPage')
 }
 /** ====== 页面重置-end ===== */
+
+/** ===== 页面预览-start ===== **/
+function previewPage() {
+  emits('preview')
+}
+/** ===== 页面预览-end ===== **/
 </script>
 
 <template>
@@ -145,7 +193,7 @@ function resetPage() {
       <!-- 页面重置 -->
       <el-button @click="resetPage">重置页面</el-button>
       <!-- 页面预览 -->
-      <el-button class="theme-btn">预览</el-button>
+      <el-button @click="previewPage" class="theme-btn">预览</el-button>
     </div>
   </div>
 </template>

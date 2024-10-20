@@ -440,3 +440,50 @@ function removeProgress(item: any) {
     proStack.pop();
     console.log('进度栈', proStack);
 }
+
+
+/**
+ * @description 页面大小同步执行函数
+ * @param localData
+ * @param params
+ */
+function handleChangeSize(localData: any, params: any) {
+    const newData = deepClone(localData);
+    if (params) {
+        newData.page[0].size = {
+            ...params
+        };
+    } else {
+        newData.page[0].size = {
+            width: 1100,
+            height: 'auto'
+        }
+    }
+    return newData;
+}
+
+/**
+ * @description 同步页面大小
+ * @param params
+ */
+export function syncSize(params: any) {
+    const localData = JSON.parse(sessionStorage.getItem(localKey) as string);
+    // 如果sessionStorage中有数据
+    try {
+        if (localData) {
+            const newData = handleChangeSize(localData, params);
+            setSessionStorage(localKey, newData);
+        } else {
+            // 如果sessionStorage中没有数据
+            const localData = JSON.parse(JSON.stringify(initJson));
+            const newData = handleChangeSize(localData, params);
+            setSessionStorage(localKey, newData);
+        }
+    } catch (e) {
+        $message({
+            type: "error",
+            message: '同步页面大小错误',
+            offset: 80
+        })
+    }
+}
