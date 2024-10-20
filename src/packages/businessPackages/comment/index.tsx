@@ -50,7 +50,7 @@ export default {
                         <span class={'text-[10px]'}>{ props?.date }</span>
                     </div>
                     <div class={'w-full h-auto flex items-center whitespace-pre-line text-ellipsis text-[15px]'}>
-                        { props?.comment }
+                        { props?.content }
                     </div>
                     <div class={'w-full h-auto flex items-center justify-start'}>
                         <img class={'w-16 h-16 flex object-contain'} src={props?.image} alt="" />
@@ -82,7 +82,7 @@ export default {
             label: '买家',
             defaultValue: '张**三'
         }),
-        comment: createEditorInputProp({
+        content: createEditorInputProp({
             label: '评论',
             defaultValue: '180, 100斤,穿上很好看,质量也不错,很满意'
         }),
