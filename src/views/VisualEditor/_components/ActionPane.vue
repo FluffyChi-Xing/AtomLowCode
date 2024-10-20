@@ -62,7 +62,7 @@ function device2string(item: number) {
 function checkSize() {
   const localData = JSON.parse(sessionStorage.getItem(localKey))
   // 如果本地存储有数据
-  console.log('localData', localData)
+  // console.log('localData', localData)
   if (localData) {
     const size = localData.page[0]?.size;
     device2string(size?.width)
@@ -106,6 +106,7 @@ function handleSave() {
 /** ====== 页面重置-start ===== */
 function resetPage() {
   emits('resetPage')
+  checkSize()
 }
 /** ====== 页面重置-end ===== */
 

@@ -17,6 +17,7 @@ import GenerateDialog from "@/components/GenerateDialog.vue";
 import SchemaPane from '@/views/VisualEditor/_components/SchemaPane/index.vue'
 import {$message} from "@/componsabels/Element-Plus";
 import {localKey} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
+import Preview from '@/views/VisualEditor/_components/preview/index.vue'
 
 
 /** ===== 画布尺寸调节-start ===== **/
@@ -192,6 +193,7 @@ onMounted(() => {
 const isReset = ref<boolean>(false)
 function handleReset() {
   isReset.value = !isReset.value
+  checkSize()
 }
 /** ===== 页面重置-end ===== **/
 
@@ -223,6 +225,36 @@ function confirmNewPage() {
   createPage.value = false
 }
 /** ===== 新建页面-end ===== **/
+
+/** ===== 组件预览-start ===== **/
+const isPreview = ref<boolean>(false)
+const previewSize = ref<number>(1100)
+
+
+function handlePreview() {
+  checkPreSize()
+  isPreview.value = !isPreview.value
+}
+
+function checkPreSize() {
+  const localData = JSON.parse(sessionStorage.getItem(localKey) as string || JSON.stringify(initJson))
+  const size = localData.page[0]?.size
+  if (size) {
+    // console.log('size', size)
+    previewSize.value = size?.width
+  } else {
+    previewSize.value = 1100
+  }
+}
+
+function cancelPre() {
+  isPreview.value = false
+}
+
+function confirmPre() {
+  isPreview.value = false
+}
+/** ===== 组件预览-end ===== **/
 </script>
 
 <template>
@@ -232,6 +264,7 @@ function confirmNewPage() {
       <ActionPane
           @size-change="changeSize"
           @reset-page="handleReset"
+          @preview="handlePreview"
       />
     </div>
     <!-- 工作台 -->
@@ -385,6 +418,19 @@ function confirmNewPage() {
     >
       <template #main>
         <span class="text-red-500 font-bold">新建页面窗口</span>
+      </template>
+    </GenerateDialog>
+    <!-- 组件预览弹框 -->
+    <GenerateDialog
+        v-model:visible="isPreview"
+        title="组件预览"
+        :destroy="true"
+        :width="previewSize"
+        @cancel="cancelPre"
+        @confirm="confirmPre"
+    >
+      <template #main>
+        <Preview />
       </template>
     </GenerateDialog>
   </div>

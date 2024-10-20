@@ -4,10 +4,12 @@ const props = withDefaults(defineProps<{
   visible?: boolean;
   title?: string;
   width?: string | number;
+  destroy?: boolean;
 }>(), {
   visible: false,
   width: 500,
-  title: '通用弹窗'
+  title: '通用弹窗',
+  destroy: false
 })
 
 const isShow = ref<boolean>(props.visible)
@@ -30,6 +32,7 @@ watch(() => props.visible, (val) => {
   <div class="w-auto h-auto flex">
     <el-dialog
         v-model="isShow"
+        :destroy-on-close="destroy"
         :width="width"
     >
       <template
