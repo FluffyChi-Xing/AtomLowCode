@@ -19,6 +19,7 @@ export default {
             default-active={'1'}
             mode={'horizontal'}
             style={'width: 100%;height: 100%;'}
+            route={false}
         >
             <ElMenuItem
                 index={'1'}
@@ -94,10 +95,37 @@ export default {
                 }
             ],
             defaultValue: 'horizontal'
+        }),
+        route: createEditorSelectProp({
+            label: '是否开启路由模式',
+            options: [
+                {
+                    label: '是',
+                    value: true
+                },
+                {
+                    label: '否',
+                    value: false
+                }
+            ],
+            defaultValue: false
         })
     },
     styles: {
 
     },
-    events: []
+    events: [
+        {
+            label: '菜单切换',
+            value: 'select'
+        },
+        {
+            label: '菜单展开',
+            value: 'open'
+        },
+        {
+            label: '菜单关闭',
+            value: 'close'
+        }
+    ]
 } as VisualEditorComponent;

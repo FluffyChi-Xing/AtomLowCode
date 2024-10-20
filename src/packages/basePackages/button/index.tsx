@@ -29,7 +29,7 @@ export default {
     },
     events: [
         {
-            label: '点击按钮，且按钮状态不为加载或禁用时触发',
+            label: '按钮点击事件',
             value: 'click',
         }
     ],

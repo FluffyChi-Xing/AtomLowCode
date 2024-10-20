@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref} from 'vue';
+import {onMounted, ref, watch} from 'vue';
 const props = withDefaults(defineProps<{
   data?: any;
 }>(), {
@@ -8,16 +8,21 @@ const props = withDefaults(defineProps<{
 
 
 const emits = defineEmits(['editEvent', 'deleteEvent'])
-const currentEvent = ref<string>('something')
-const componentEvent = ref<any[]>(props.data?.events)
-const eventList = ref<any[]>([
+const currentEvent = ref<string>('all')
+const componentEvent = ref<any[]>([
   {
-    label: 'onClick',
-    value: 'click'
+    label: '全部',
+    value: 'all'
+  }
+])
+const eventList = ref<any[]>(props.data?.events ? props.data?.events : [
+  {
+    label: '样例',
+    value: 'example'
   }
 ])
 function clearEvent() {
-  currentEvent.value = ''
+  currentEvent.value = 'all'
 }
 
 function handleDelete(item: string, index: string) {
@@ -26,6 +31,26 @@ function handleDelete(item: string, index: string) {
     event: index
   })
 }
+
+function initData() {
+  // 恢复原有数据(除了第一个)
+  componentEvent.value.splice(1)
+  props.data?.events?.forEach((item: any) => {
+    componentEvent.value?.push({
+      label: item.label,
+      value: item.value
+    })
+  })
+  eventList.value = props.data?.events;
+}
+
+onMounted(() => {
+  initData()
+})
+
+watch(() => props.data, () => {
+  initData()
+})
 </script>
 
 <template>
@@ -38,6 +63,7 @@ function handleDelete(item: string, index: string) {
           placeholder="请选择组件事件"
           clearable
           @clear="clearEvent"
+          placement="bottom"
       >
         <el-option
             v-for="(item, index) in componentEvent"

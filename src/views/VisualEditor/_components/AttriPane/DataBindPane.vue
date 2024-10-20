@@ -58,7 +58,8 @@ const attriTabList = ref<attributeTabTypes[]>([
 function initPaneData() {
   paneBindData.value = {
     label: props.currentNode?.label,
-    props: props.currentNode?.props
+    props: props.currentNode?.props,
+    events: props.currentNode?.events
   }
 }
 

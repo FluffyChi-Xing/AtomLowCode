@@ -19,12 +19,12 @@ export default {
 
         return () => (
             <div style={styles} ref={(el) => registerRef(el, block._vid)} {...props}>
-                <img style={'width: 100%;height: 100%;object-fit: contain;'} src={props.src} alt={props?.alt} />
+                <img style={'width: 100%;height: 100%;object-fit: contain;'} src={props.image} alt={props?.alt} />
             </div>
         )
     },
     props: {
-        src: createEditorInputProp({
+        image: createEditorInputProp({
             label: '图片地址',
             defaultValue: 'https://img.alicdn.com/imgextra/i1/O1CN01wZhY2Y1abR1og16N1_!!6000000003348-2-tps-7680-120.png'
         }),
