@@ -1,6 +1,7 @@
 import type {VisualEditorComponent} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
 import {ElEmpty} from "element-plus";
 import {useGlobalProperties} from "@/views/VisualEditor/_componsables/hooks/useGlobalProperties";
+import {createEditorInputProp} from "@/views/VisualEditor/_componsables/api/visual-editor.props";
 
 export default {
     key: 'empty',
@@ -21,7 +22,10 @@ export default {
         height: true,
     },
     props: {
-
+        description: createEditorInputProp({
+            label: '描述',
+            defaultValue: '空状态'
+        })
     },
     styles: {
 

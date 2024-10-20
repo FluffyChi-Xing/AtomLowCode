@@ -26,6 +26,11 @@ const mode = ref<string>(props.data?.props?.mode?.defaultValue);
 const modes = ref<any[]>(props.data?.props?.mode?.options || []);
 const image = ref<string>(props?.data?.props?.image?.defaultValue);
 const content = ref<string>(props.data.props?.content?.defaultValue);
+const animated = ref<boolean | string>(props.data?.props?.animated?.defaultValue);
+const background = ref<boolean>(props.data?.props?.background?.defaultValue);
+// 其他通用属性
+const size = ref<string>(props.data?.props?.size?.defaultValue);
+const description = ref<string>(props.data?.props?.description?.defaultValue);
 function clearContent() {
   componentContent.value = ''
 }
@@ -45,6 +50,10 @@ function initData() {
   mode.value = props.data?.props?.mode?.defaultValue
   image.value = props?.data?.props?.image?.defaultValue
   content.value = props.data.props?.content?.defaultValue
+  animated.value = props.data?.props?.animated?.defaultValue
+  background.value = props.data?.props?.background?.defaultValue
+  size.value = props.data?.props?.size?.defaultValue
+  description.value = props.data?.props?.description?.defaultValue
 }
 
 function changeType() {
@@ -66,6 +75,10 @@ function clearDefaultAct() {
   defaultActive.value = ''
 }
 
+function sizeClear() {
+  size.value = ''
+}
+
 function clearLoading() {
   if (props.data?.props?.loading?.options) {
     isLoading.value = ''
@@ -80,6 +93,10 @@ function clearImage() {
 
 function contentClear() {
   content.value = ''
+}
+
+function clearDesc() {
+  description.value = ''
 }
 
 function handleConfirm() {
@@ -97,7 +114,11 @@ function handleConfirm() {
     textColor: textColor.value,
     mode: mode.value,
     image: image.value,
-    content: content.value
+    content: content.value,
+    animated: animated.value,
+    background: background.value,
+    size: size.value,
+    description: description.value
   }
   console.log('prop label:', props.label)
   try {
@@ -336,6 +357,57 @@ watch(() => props.data, () => {
           clearable
           placeholder="请输入内容"
           @clear="contentClear"
+          class="w-full"
+      />
+    </el-form-item>
+    <!-- 是否开启动画 -->
+    <el-form-item
+        v-if="props.data?.props?.animated"
+        label="是否开启动画"
+    >
+      <el-switch
+          v-model="animated"
+      />
+    </el-form-item>
+    <!-- 是否开启背景 -->
+    <el-form-item
+        v-if="props.data?.props?.background"
+        label="是否开启背景"
+    >
+      <el-switch
+          v-model="background"
+      />
+    </el-form-item>
+    <!-- 尺寸选择 -->
+    <el-form-item
+        v-if="props.data?.props?.size"
+        label="尺寸选择"
+    >
+      <el-select
+          v-model="size"
+          clearable
+          @clear="sizeClear"
+          placeholder="请选择尺寸"
+          placement="bottom"
+      >
+        <el-option
+            v-for="(item, index) in props.data.props?.size?.options"
+            :key="index"
+            :label="item.label"
+            :value="item.value"
+        />
+      </el-select>
+    </el-form-item>
+    <!-- 描述内容 -->
+    <el-form-item
+        v-if="props.data?.props?.description"
+        label="描述内容"
+    >
+      <el-input
+          v-model="description"
+          clearable
+          @clear="clearDesc"
+          placeholder="请输入描述内容"
           class="w-full"
       />
     </el-form-item>

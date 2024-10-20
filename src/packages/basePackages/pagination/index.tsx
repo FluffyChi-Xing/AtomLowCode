@@ -15,6 +15,7 @@ export default {
             layout={'prev, pager, next'}
             total={50}
             background={true}
+            size={'default'}
         />
     </div>,
     render: ({ props, block, styles }) => {
@@ -55,6 +56,24 @@ export default {
         pageSize: createEditorInputProp({
             label: '每页显示条目个数',
             defaultValue: 10
+        }),
+        size: createEditorSelectProp({
+            label: '尺寸',
+            options: [
+                {
+                    label: '默认',
+                    value: 'default'
+                },
+                {
+                    label: '大型',
+                    value: 'large'
+                },
+                {
+                    label: '小型',
+                    value: 'small'
+                }
+            ],
+            defaultValue: 'default'
         })
     },
     styles: {
