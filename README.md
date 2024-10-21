@@ -1,4 +1,4 @@
-# AtomLowCode
+# 原子低码 AtomLowCode
 
 This template should help get you started developing with Vue 3 in Vite.
 ## 项目首页
@@ -7,6 +7,9 @@ This template should help get you started developing with Vue 3 in Vite.
 ![{6D7C5FFE-98FC-4566-9973-1E3846B9CA5E}](https://github.com/user-attachments/assets/a7a476cb-f008-43af-a376-3ffcb87c6b33)
 ## 页面转码
 ![140978955d3b535025186184a8cd450](https://github.com/user-attachments/assets/932669f5-975b-4759-9ec4-b4c36c493f36)
+## 页面预览
+![{354BB891-0C22-4792-9B5D-7E33160A309B}](https://github.com/user-attachments/assets/b2952e06-6844-4db2-958d-c759d331e7a7)
+
 
 
 
@@ -15,7 +18,7 @@ This template should help get you started developing with Vue 3 in Vite.
 
 [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-## Type Support for `.vue` Imports in TS
+## TS 支持
 
 TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
 
@@ -23,25 +26,25 @@ TypeScript cannot handle type information for `.vue` imports by default, so we r
 
 See [Vite Configuration Reference](https://vitejs.dev/config/).
 
-## Project Setup
+## 项目初始化
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### 启动项目
 
 ```sh
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+### 项目构建
 
 ```sh
 npm run build
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+### Eslint 代码格式化 [ESLint](https://eslint.org/)
 
 ```sh
 npm run lint
