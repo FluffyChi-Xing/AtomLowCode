@@ -105,8 +105,8 @@ function handleSave() {
 
 /** ====== 页面重置-start ===== */
 function resetPage() {
+  reactSize.value = 'pc'
   emits('resetPage')
-  checkSize()
 }
 /** ====== 页面重置-end ===== */
 

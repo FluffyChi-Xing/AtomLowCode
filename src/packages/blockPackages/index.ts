@@ -14,6 +14,4 @@ Object.entries(modules).forEach(([key, module]) => {
     components[compName] = module?.default || module;
 })
 
-console.log('layout-component', components)
-
 export default components;

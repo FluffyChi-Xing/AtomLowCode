@@ -255,7 +255,11 @@ function handleCreateComp(localData: any, comp: any) {
             saveProgress(comp?.comp);
         } catch (e) {
             console.log('插入组件错误', e);
-            $message.error('插入组件错误');
+            $message({
+                type: "error",
+                message: '未知错误',
+                offset: 80
+            });
         }
         console.log('sessionStorage 插入组件', newData);
         return newData;

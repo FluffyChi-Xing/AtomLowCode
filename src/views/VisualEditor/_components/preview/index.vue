@@ -34,7 +34,6 @@ function getLocalData() {
 }
 
 onMounted(() => {
-  console.log('preview 预览器弹出')
   getLocalData();
 })
 /** ===== 页面预览器初始化-end ===== **/
@@ -43,18 +42,26 @@ onMounted(() => {
 <template>
   <div class="w-full h-full max-h-[550px] flex flex-col p-4">
     <el-scrollbar height="550" class="w-full h-full">
-      <PreviewSection
-          v-for="(item, index) in localData?.section"
-          :key="index"
-          :section-data="item?.component"
+      <div
+          v-if="localData?.section[0]?.component?.length"
+          class="w-full h-full flex flex-col"
+      >
+        <PreviewSection
+            v-for="(item, index) in localData?.section"
+            :key="index"
+            :section-data="item?.component"
+        />
+      </div>
+      <el-empty
+          v-else
+          description="暂无预览"
       />
     </el-scrollbar>
   </div>
 </template>
 
 <style scoped>
-:deep(.ell-scrollbar__view) {
-  width: 100%;
+:deep(.el-scrollbar__view) {
   height: 100%;
 }
 </style>

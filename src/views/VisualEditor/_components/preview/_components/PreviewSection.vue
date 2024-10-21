@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import PreviewComponent from "@/views/VisualEditor/_components/preview/_components/PreviewComponent.vue";
 import {onMounted} from "vue";
+import { ref } from 'vue';
 
 const props = withDefaults(defineProps<{
   sectionData?: any;

@@ -23,7 +23,7 @@ export default {
                     <div class={'w-full mx-auto max-w-[100px] my-4 justify-center items-center h-auto flex border border-white rounded-[5px] overflow-hidden'}>
                         <span class={'text-white'}>{ year }.{ month }</span>
                     </div>
-                    <div class={'mt-auto w-full h-auto items-center flex text-white text-[10px]'}>
+                    <div class={'mt-auto w-auto mx-auto h-auto items-center flex text-white text-[10px]'}>
                         <ElIcon><Location /></ElIcon>
                         <span>中国-湛江 中国大陆南极村</span>
                     </div>
@@ -46,7 +46,7 @@ export default {
                     <div class={'w-full mx-auto h-auto max-w-[100px] my-4 justify-center items-center flex border border-white rounded-[5px] overflow-hidden'}>
                         <span class={'text-white'}>{ year }.{ month }</span>
                     </div>
-                    <div class={'mt-auto w-full h-auto items-center flex text-white text-[10px]'}>
+                    <div class={'w-auto mt-auto h-auto mx-auto items-center flex text-white text-[10px]'}>
                         <ElIcon><Location /></ElIcon>
                         <span>{ props?.location }</span>
                     </div>

@@ -193,7 +193,7 @@ onMounted(() => {
 const isReset = ref<boolean>(false)
 function handleReset() {
   isReset.value = !isReset.value
-  checkSize()
+  canvasSize.value = 1100
 }
 /** ===== 页面重置-end ===== **/
 
