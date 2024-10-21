@@ -6,12 +6,14 @@ const props = withDefaults(defineProps<{
   width?: string | number;
   destroy?: boolean;
   draggable?: boolean;
+  showClose?: boolean;
 }>(), {
   visible: false,
   width: 500,
   title: '通用弹窗',
   destroy: false,
   draggable: false,
+  showClose: false
 })
 
 const isShow = ref<boolean>(props.visible)
@@ -37,6 +39,7 @@ watch(() => props.visible, (val) => {
         :destroy-on-close="destroy"
         :width="width"
         :draggable="draggable"
+        :show-close="showClose"
     >
       <template
           v-if="title"

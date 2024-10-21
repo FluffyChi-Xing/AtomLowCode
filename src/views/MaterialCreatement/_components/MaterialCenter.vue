@@ -1,17 +1,26 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import {onMounted, ref, watch} from "vue";
 import GenerateDialog from "@/components/GenerateDialog.vue";
 import {$message} from "@/componsabels/Element-Plus";
 import { useRouter } from "vue-router";
 import {MaterialCenterTypes} from "@/views/MaterialCreatement/_componsables/apis/materialCenterTypes";
+import {localKey} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
+import Preview from "@/views/VisualEditor/_components/preview/index.vue";
+import initJson from "@/init.json";
 
-const currentTab = ref<string>('myComps');
+const currentTab = ref<string>('myPages');
+const isPreview = ref<boolean>(false)
+const previewSize = ref<number>(1100)
 const router = useRouter();
 interface tabTypes {
   label: string;
   value: string;
 }
 const tabOptions = ref<tabTypes[]>([
+  {
+    label: '我的页面',
+    value: 'myPages'
+  },
   {
     label: '我的组件',
     value: 'myComps'
@@ -27,11 +36,19 @@ const tabOptions = ref<tabTypes[]>([
 ])
 
 const tableData = ref<MaterialCenterTypes.materialTableTypes[]>([])
-
+watch(() => currentTab.value, (val: any) => {
+  if (val !== 'myPages') {
+    tableData.value = []
+    // getPageOrComp()
+  } else {
+    getPageOrComp()
+  }
+})
 /** ===== 新建组件弹框初始化-start ===== **/
 const dialogVisible = ref<boolean>(false)
 const newCompName = ref<string>('')
 const newCompLabel = ref<string>('')
+const newPageRoute = ref<string>('')
 
 function createNewComp() {
   dialogVisible.value = true
@@ -61,6 +78,10 @@ function clearLabel() {
   newCompLabel.value = ''
 }
 
+function clearRoute() {
+  newPageRoute.value = ''
+}
+
 function createComp(name: string, label: string) {
   tableData.value.push({
     index: tableData.value?.length + 1,
@@ -71,10 +92,82 @@ function createComp(name: string, label: string) {
   })
 }
 
-function createComponent(row: any) {
-  router.push(`/atom/materialCreate/workspace${row.name}&${row.label}`)
+
+function getPageOrComp() {
+  // 暂时只能获取 session storage 的 page 数据
+  const sessionData = sessionStorage.getItem(localKey) as string
+  if (sessionData) {
+    const session = JSON.parse(sessionData)
+    if (session?.page) {
+      session.page?.forEach((item: any, index: number) => {
+        tableData.value.push({
+          index: index + 1,
+          name: item?.title,
+          version: '1.0.0',
+          type: '低代码页面',
+          label: item?.title
+        })
+      })
+    }
+  }
 }
+
+function createComponent(row: any, tab: string) {
+  if (tab === 'myPages') {
+    router.push('/atom/visualEditor')
+  } else {
+    router.push(`/atom/materialCreate/workspace${row.name}&${row.label}`)
+  }
+}
+
+onMounted(() => {
+  getPageOrComp()
+})
 /** ===== 新建组件弹框初始化-end ===== **/
+
+/** ===== 组件预览弹框初始化-start ===== **/
+
+function checkPreSize(index: number) {
+  const localData = JSON.parse(sessionStorage.getItem(localKey) as string || JSON.stringify(initJson))
+  const size = localData.page[index]?.size
+  if (size) {
+    previewSize.value = size?.width
+  } else {
+    previewSize.value = 1100
+  }
+}
+function cancelPre() {
+  isPreview.value = false
+}
+
+function confirmPre() {
+  isPreview.value = false
+}
+
+
+function handlePreview(index: number) {
+  checkPreSize(index);
+  isPreview.value = true
+}
+/** ===== 组件预览弹框初始化-end ===== **/
+
+/** ===== 删除组件/页面弹窗初始化-start ===== **/
+const isDelete = ref<boolean>(false)
+const deleteItem = ref<string>('')
+
+function cancelDelete() {
+  isDelete.value = false
+}
+
+function confirmDelete() {
+  isDelete.value = false
+}
+
+function handleDelete(item: string) {
+  isDelete.value = true
+  deleteItem.value = `你确定要删除 ${item} 吗?`
+}
+/** ===== 删除组件/页面弹窗初始化-end ===== **/
 </script>
 
 <template>
@@ -104,8 +197,12 @@ function createComponent(row: any) {
       >
         <!-- 表头操作栏 -->
         <div class="w-full h-10 flex items-center">
-          <el-button @click="createNewComp" icon="CirclePlus" type="primary" class="mr-4">开发新组件</el-button>
-          <el-button icon="Link" disabled>构建资产包</el-button>
+          <el-button @click="createNewComp" icon="CirclePlus" type="primary" class="mr-4">
+            {{ currentTab === 'myPages' ? '新建页面' : '新建组件' }}
+          </el-button>
+          <el-button icon="Link" disabled>
+            {{ currentTab === 'myPages' ? '构建页面' : '构建资产包'}}
+          </el-button>
         </div>
         <!-- 表主体 -->
         <div
@@ -128,15 +225,15 @@ function createComponent(row: any) {
                 prop="index"
             />
             <el-table-column
-                label="组件标题"
+                :label="currentTab === 'myPages' ? '页面标题' : '组件标题'"
                 prop="label"
             />
             <el-table-column
-                label="组件名称"
+                :label="currentTab === 'myPages' ? '页面名称' : '组件名称'"
                 prop="name"
             />
             <el-table-column
-                label="版本"
+                :label="currentTab === 'myPages' ? '版本' : '组件版本'"
                 prop="version"
             />
             <el-table-column
@@ -153,15 +250,19 @@ function createComponent(row: any) {
             >
              <template #default="{row}">
                <div class="w-full h-full flex">
-                 <el-button @click="createComponent(row)" type="text" size="small" class="mr-2">开发组件</el-button>
-                 <el-button type="text" size="small" class="mr-2">导出组件</el-button>
-                 <el-button type="text" size="small">删除</el-button>
+                 <el-button @click="createComponent(row, currentTab)" type="text" size="small" class="mr-2">
+                   {{ currentTab === 'myPages' ? '编辑页面' : '编辑组件' }}
+                 </el-button>
+                 <el-button @click="handlePreview(row.index - 1)" type="text" size="small" class="mr-2">
+                   {{ currentTab === 'myPages' ? '预览页面' : '预览组件' }}
+                 </el-button>
+                 <el-button @click="handleDelete(row.label)" type="text" size="small">删除</el-button>
                </div>
              </template>
             </el-table-column>
             <template #empty>
               <el-empty
-                  description="暂无组件数据"
+                  :description="currentTab === 'myPages' ? '暂无页面' : '暂无组件'"
               />
             </template>
           </el-table>
@@ -175,7 +276,7 @@ function createComponent(row: any) {
     <!-- 新建组件弹框 -->
     <GenerateDialog
         v-model:visible="dialogVisible"
-        title="开发组件"
+        :title="currentTab === 'myPages' ? '新建页面' : '新建组件'"
         @confirm="handleConfirm"
         @cancel="handleCancel"
     >
@@ -183,29 +284,67 @@ function createComponent(row: any) {
         <div class="w-full h-auto">
           <el-form-item
               required
-              label="组件标题"
+              :label="currentTab === 'myPages' ? '页面标题' : '组件标题'"
           >
             <el-input
                 v-model="newCompName"
                 clearable
                 class="w-full"
-                placeholder="请输入组件标题"
+                :placeholder="currentTab === 'myPages' ? '请输入页面标题' : '请输入组件标题'"
                 @clear="clearName"
             />
           </el-form-item>
           <el-form-item
               required
-              label="组件名称"
+              :label="currentTab === 'myPages' ? '页面名称' : '组件名称'"
           >
             <el-input
                 v-model="newCompLabel"
                 clearable
                 class="w-full"
-                placeholder="请输入组件名称"
+                :placeholder="currentTab === 'myPages' ? '请输入页面名称' : '请输入组件名称'"
                 @clear="clearLabel"
             />
           </el-form-item>
+          <el-form-item
+              v-if="currentTab === 'myPages'"
+              label="页面路由"
+              required
+          >
+            <el-input
+                v-model="newPageRoute"
+                clearable
+                placeholder="请输入页面路由"
+                @clear="clearRoute"
+                class="w-full"
+            />
+          </el-form-item>
         </div>
+      </template>
+    </GenerateDialog>
+    <!-- 组件预览弹框 -->
+    <GenerateDialog
+        v-model:visible="isPreview"
+        title="组件预览"
+        :destroy="true"
+        :width="previewSize"
+        :draggable="true"
+        @cancel="cancelPre"
+        @confirm="confirmPre"
+    >
+      <template #main>
+        <Preview />
+      </template>
+    </GenerateDialog>
+    <!-- 删除组件/页面弹窗 -->
+    <GenerateDialog
+        v-model:visible="isDelete"
+        :title="deleteItem"
+        @cancel="cancelDelete"
+        @confirm="confirmDelete"
+    >
+      <template #main>
+        <span class="text-red-500">这将会失去很长时间，请谨慎选择 !</span>
       </template>
     </GenerateDialog>
   </div>
