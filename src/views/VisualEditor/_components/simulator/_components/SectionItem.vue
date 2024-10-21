@@ -84,7 +84,7 @@ watch(() => focusedComp.value, (newVal, oldVal) => {
 watch(() => tempList.value, (newVal, oldVal) => {
   if (newVal.length > oldVal.length) {
     const newComp = newVal[newVal.length - 1];
-    console.log('newComp:', newComp);
+    // console.log('newComp:', newComp);
     handleCreateComp(newComp, props.label);
   }
 });

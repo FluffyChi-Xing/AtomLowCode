@@ -8,11 +8,11 @@ import type {VisualEditorComponent} from "@/views/VisualEditor/_componsables/uti
 
 
 
+
 export default {
     key: 'button',
     moduleName: 'basePackages',
     label: '按钮',
-    icon: 'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
     preview: () => <ElButton size={'default'} loading={false} type={'primary'}>按钮</ElButton>,
     render: ({ props, block, styles}) => {
         const { registerRef } = useGlobalProperties();
@@ -75,7 +75,6 @@ export default {
             ],
             defaultValue: false,
         }),
-        preview: "() => <ElButton loading={false} type={'primary'}>按钮</ElButton>",
         size: createEditorSelectProp({
             label: '按钮尺寸',
             options: [

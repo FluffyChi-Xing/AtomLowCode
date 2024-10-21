@@ -426,6 +426,7 @@ function confirmPre() {
         title="组件预览"
         :destroy="true"
         :width="previewSize"
+        :draggable="true"
         @cancel="cancelPre"
         @confirm="confirmPre"
     >

@@ -16,11 +16,12 @@ export default {
             width: '100%',
             height: '100%',
         };
+        const list = [];
         return (
-            <ElCard style={style}>
+            <ElCard style={style} shadow={'never'}>
                 卡片
                 <SectionItem
-                    list={[]}
+                    list={list}
                     label={'嵌套组件'}
                     drag={true}
                     isShow={false}
@@ -35,7 +36,7 @@ export default {
             <div style={styles}>
                 <ElCard ref={(el) => registerRef(el, block._vid)} {...props}>
                     <SectionItem
-                        list={[]}
+                        list={props.list || []}
                         label={'嵌套组件'}
                         drag={true}
                         isShow={false}
@@ -75,7 +76,8 @@ export default {
                 }
             ],
             defaultValue: 'always',
-        })
+        }),
+        list: []
     },
     styles: {
 

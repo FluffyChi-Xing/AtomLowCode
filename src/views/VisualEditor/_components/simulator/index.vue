@@ -146,8 +146,10 @@ watch(() => props.clearAll, () => {
 function pageInit() {
   const sectionData = persistentSectionList()
   if (sectionData) {
+    // 如果 session storage 中存在数据，则直接渲染
     sectionList.value = sectionData
   } else {
+    // 否则，初始化一个 section
     sectionList.value = [
       {
         index: 1,
