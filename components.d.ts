@@ -40,6 +40,7 @@ declare module 'vue' {
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElTree: typeof import('element-plus/es')['ElTree']
     GenerateDialog: typeof import('./src/components/GenerateDialog.vue')['default']
+    RenderComponent: typeof import('./src/components/RenderComponent.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

@@ -385,7 +385,6 @@ export function updateComponent(section: string, uuid: any, params: any) {
 export function persistentSectionList() {
     const sessionData = JSON.parse(sessionStorage.getItem(localKey) as string);
     if (sessionData) {
-        console.log('sessionData', sessionData.page[0].section);
         return sessionData.page[0].section;
     }
 }

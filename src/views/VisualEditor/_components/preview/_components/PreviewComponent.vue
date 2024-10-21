@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onMounted, ref} from 'vue'
-import {visualConfig} from "@/componsabels/visual-config";
+import {useKeyGetComp} from "@/componsabels/utils/utils";
 const props = withDefaults(defineProps<{
   component?: any;
 }>(), {
@@ -13,10 +13,9 @@ const comp = ref<any>(null);
 
 function checkComponent() {
   if (props.component) {
-    const moduleName = props?.component?.key;
-    const component = visualConfig.componentMap[moduleName];
-    comp.value = component;
-    console.log('components', comp.value)
+    useKeyGetComp(props.component).then((res: any) => {
+      comp.value = res
+    });
   }
 }
 

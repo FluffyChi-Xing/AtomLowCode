@@ -3,6 +3,7 @@ import {computed, ref, watch} from 'vue';
 import DraggableTansitionGroup from "@/views/VisualEditor/_components/DraggableTansitionGroup.vue";
 import type {VisualEditorComponent} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
 import {removeComponent} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
+import RenderComponent from "@/components/RenderComponent.vue";
 
 
 const props = withDefaults(defineProps<{
@@ -91,16 +92,6 @@ watch(() => tempList.value, (newVal, oldVal) => {
 watch(() => props.clear, () => {
   tempList.value = [];
 })
-
-
-// TODO 将 session 中的组件的 preview 字符串转换为函数
-function disposePreview(element: any) {
-  const preview = element?.props?.preview;
-  // 去除 preview 字符串两边的双引号
-  const funcString = preview?.replace(/"/g, '');
-  // 创建一个新的函数
-  return new Function(`return ${funcString}`)();
-}
 </script>
 
 <template>
@@ -127,9 +118,8 @@ function disposePreview(element: any) {
                 class="w-full h-full flex relative"
                 @click="handleFocusComp(index)"
             >
-              <component
-                  class="w-full h-full flex"
-                  :is="element?.preview()"
+              <RenderComponent
+                  :data="element"
               />
               <!-- 删除组件 -->
               <div
