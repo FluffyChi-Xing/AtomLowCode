@@ -60,6 +60,14 @@ const router = createRouter({
               component: () => import('@/views/MaterialCreatement/_components/MaterialCenter.vue')
             },
             {
+              path: '/atom/materialCreate/document',
+              name: 'document',
+              meta: {
+                title: '文档中心'
+              },
+              component: () => import('@/views/MaterialCreatement/DocumentCenter.vue')
+            },
+            {
               path: '/atom/materialCreate/workspace:name&:label',
               name: 'workspace',
               meta: {

@@ -14,14 +14,17 @@
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
     "@highlightjs/vue-plugin": "^2.1.0",
+    "@kangc/v-md-editor": "^1.7.12",
     "@vueuse/core": "^11.1.0",
     "echarts": "^5.5.1",
     "element-plus": "^2.8.4",
     "highlight.js": "^11.10.0",
+    "md-editor-v3": "^4.21.1",
     "nprogress": "^0.2.0",
     "ofetch": "^1.4.1",
     "pinia": "^2.1.7",
-    "vue": "^3.4.29",
+    "vite-plugin-md": "^0.21.5",
+    "vue": "^3.5.11",
     "vue-router": "^4.3.3",
     "vuedraggable": "^4.1.0"
   },

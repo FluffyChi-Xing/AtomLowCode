@@ -11,6 +11,10 @@ import 'highlight.js/styles/atom-one-dark.css'
 import javascript from 'highlight.js/lib/languages/javascript';
 import hljsVuePlugin from '@highlightjs/vue-plugin'
 import 'highlight.js/lib/common';
+import 'md-editor-v3/lib/style.css';
+import {MdEditor} from "md-editor-v3";
+
+
 
 
 const app = createApp(App);
@@ -23,5 +27,6 @@ hljs.registerLanguage('javascript', javascript);
 app.use(createPinia())
 app.use(router)
 app.use(hljsVuePlugin)
+app.use(MdEditor)
 
 app.mount('#app')

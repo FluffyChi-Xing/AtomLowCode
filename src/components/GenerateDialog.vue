@@ -40,6 +40,7 @@ watch(() => props.visible, (val) => {
         :width="width"
         :draggable="draggable"
         :show-close="showClose"
+        :close-on-click-modal="false"
     >
       <template
           v-if="title"

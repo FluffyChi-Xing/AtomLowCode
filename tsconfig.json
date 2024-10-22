@@ -20,6 +20,7 @@
     "paths": {
       "@/*": ["*"]
     },
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
   }
 }

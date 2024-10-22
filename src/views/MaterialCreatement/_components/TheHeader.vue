@@ -1,7 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import {onMounted, ref, watch} from 'vue';
 
-const currentTab = ref<string>('center');
+const props = withDefaults(defineProps<{
+  defaultActive?: string;
+}>() ,{
+  defaultActive: 'center'
+})
+
+
+
+const currentTab = ref<string>(props.defaultActive);
 interface tabTypes {
   label: string;
   value: string;
@@ -21,6 +29,18 @@ const emits = defineEmits(['tabChange'])
 function changeTab(index: string) {
   emits('tabChange', index)
 }
+
+function checkActive() {
+  currentTab.value = props.defaultActive;
+}
+
+onMounted(() => {
+  checkActive();
+})
+
+watch(() => props.defaultActive, () => {
+  checkActive();
+})
 </script>
 
 <template>

@@ -6,6 +6,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import vueDevTools from 'vite-plugin-vue-devtools'
+import VitePluginMd from 'vite-plugin-md';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,6 +14,7 @@ export default defineConfig({
     vue(),
     vueJsx(),
     vueDevTools(),
+    VitePluginMd(),
     AutoImport({
       resolvers: [ElementPlusResolver()],
       include: [
@@ -28,6 +30,7 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
   ],
+  assetsInclude: ['**/*.md'],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
