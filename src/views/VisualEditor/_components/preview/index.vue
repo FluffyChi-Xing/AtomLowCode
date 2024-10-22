@@ -4,22 +4,44 @@ import initJson from '@/init.json'
 import {localKey} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
 import {$message} from "@/componsabels/Element-Plus";
 import PreviewSection from "@/views/VisualEditor/_components/preview/_components/PreviewSection.vue";
+import {useKeyGetComp} from "@/componsabels/utils/utils";
 
+
+
+const props = withDefaults(defineProps<{
+  preComp?: any;
+}>(), {
+
+})
 
 /** ===== 页面预览器初始化-start ===== **/
 const localData = ref<any>();
+const previewComp = ref<any>(props.preComp); // 组件预览传值
 
 
 function getLocalData() {
   // 清空localData
   localData.value = null;
+  previewComp.value = props.preComp || null;
   const pageData = JSON.parse(sessionStorage.getItem(localKey) as string);
   // 如果sessionStorage中有数据
   try {
+    // 如果sessionStorage中有数据
     if (pageData) {
-      localData.value = pageData.page[0];
+      // 如果预览组件，则按initJson的格式进行数据初始化
+      if (previewComp.value) {
+        const pageData = JSON.parse(JSON.stringify(initJson));
+        localData.value = pageData.page[0];
+        useKeyGetComp(previewComp.value).then((res: any) => {
+          localData.value.section[0].component.push(res)
+        })
+      } else {
+        // 正常情况下页面预览时的组件渲染逻辑
+        localData.value = pageData.page[0];
+      }
     } else {
       // 如果sessionStorage中没有数据
+      // 如果sessionStorage中没有数据,且预览组件，则无需处理
       const pageData = JSON.parse(JSON.stringify(initJson));
       localData.value = pageData.page[0];
     }

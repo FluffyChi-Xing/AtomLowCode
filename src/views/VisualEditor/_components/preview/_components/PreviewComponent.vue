@@ -12,7 +12,9 @@ const props = withDefaults(defineProps<{
 const comp = ref<any>(null);
 
 function checkComponent() {
+  // 只有当预览组件传值时走这个逻辑
   if (props.component) {
+    // 正常情况下页面预览时的组件渲染逻辑
     useKeyGetComp(props.component).then((res: any) => {
       comp.value = res
     });

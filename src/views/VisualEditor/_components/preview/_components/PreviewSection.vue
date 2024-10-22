@@ -9,11 +9,11 @@ const props = withDefaults(defineProps<{
 
 })
 
-const componentList = ref<any[]>(props?.sectionData)
+const componentList = ref<any[]>(props?.sectionData);
 
 onMounted(() => {
-  componentList.value = props.sectionData
-})
+  componentList.value = props.sectionData;
+});
 </script>
 
 <template>

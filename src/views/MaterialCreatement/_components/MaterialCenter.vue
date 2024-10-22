@@ -7,6 +7,7 @@ import {MaterialCenterTypes} from "@/views/MaterialCreatement/_componsables/apis
 import {localKey} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
 import Preview from "@/views/VisualEditor/_components/preview/index.vue";
 import initJson from "@/init.json";
+import {visualConfig} from "@/componsabels/visual-config";
 
 const currentTab = ref<string>('myPages');
 const isPreview = ref<boolean>(false)
@@ -94,21 +95,36 @@ function createComp(name: string, label: string) {
 
 
 function getPageOrComp() {
-  // 暂时只能获取 session storage 的 page 数据
-  const sessionData = sessionStorage.getItem(localKey) as string
-  if (sessionData) {
-    const session = JSON.parse(sessionData)
-    if (session?.page) {
-      session.page?.forEach((item: any, index: number) => {
-        tableData.value.push({
-          index: index + 1,
-          name: item?.title,
-          version: '1.0.0',
-          type: '低代码页面',
-          label: item?.title
+  // 获取页面
+  if (currentTab.value === 'myPages') {
+    const sessionData = sessionStorage.getItem(localKey) as string
+    if (sessionData) {
+      const session = JSON.parse(sessionData)
+      if (session?.page) {
+        session.page?.forEach((item: any, index: number) => {
+          tableData.value.push({
+            index: index + 1,
+            name: item?.title,
+            version: '1.0.0',
+            type: '低代码页面',
+            label: item?.title
+          })
         })
-      })
+      }
     }
+  }
+  // 获取组件
+  if (currentTab.value === 'myComps') {
+    console.log('全部组件')
+    Object.entries(visualConfig.componentMap)?.forEach(([key, module]) => {
+      tableData.value?.push({
+        index: tableData.value?.length + 1,
+        name: key,
+        version: '1.0.0',
+        type: '低代码组件',
+        label: module?.label
+      })
+    })
   }
 }
 
@@ -123,9 +139,16 @@ function createComponent(row: any, tab: string) {
 onMounted(() => {
   getPageOrComp()
 })
+
+
+watch(() => currentTab.value, () => {
+  tableData.value = []
+  getPageOrComp()
+})
 /** ===== 新建组件弹框初始化-end ===== **/
 
 /** ===== 组件预览弹框初始化-start ===== **/
+const currentComp = ref<any>(); // 当前组件
 
 function checkPreSize(index: number) {
   const localData = JSON.parse(sessionStorage.getItem(localKey) as string || JSON.stringify(initJson))
@@ -146,7 +169,15 @@ function confirmPre() {
 
 
 function handlePreview(index: number) {
-  checkPreSize(index);
+  // 组件预览逻辑
+  if (currentTab.value !== 'myPages') {
+    previewSize.value = 1100
+    // component key
+    currentComp.value = tableData.value[index]?.name
+  } else {
+    checkPreSize(index);
+    currentComp.value = ''
+  }
   isPreview.value = true
 }
 /** ===== 组件预览弹框初始化-end ===== **/
@@ -250,7 +281,13 @@ function handleDelete(item: string) {
             >
              <template #default="{row}">
                <div class="w-full h-full flex">
-                 <el-button @click="createComponent(row, currentTab)" type="text" size="small" class="mr-2">
+                 <el-button
+                     @click="createComponent(row, currentTab)"
+                     type="text"
+                     size="small"
+                     class="mr-2"
+                     :disabled="currentTab!=='myPages'"
+                 >
                    {{ currentTab === 'myPages' ? '编辑页面' : '编辑组件' }}
                  </el-button>
                  <el-button @click="handlePreview(row.index - 1)" type="text" size="small" class="mr-2">
@@ -333,7 +370,9 @@ function handleDelete(item: string) {
         @confirm="confirmPre"
     >
       <template #main>
-        <Preview />
+        <Preview
+            :pre-comp="currentComp"
+        />
       </template>
     </GenerateDialog>
     <!-- 删除组件/页面弹窗 -->
