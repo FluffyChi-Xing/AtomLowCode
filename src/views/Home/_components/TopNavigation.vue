@@ -1,5 +1,16 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+/** ===== github 仓库链接初始化-start ===== **/
+const githubLink = ref<string>('https://github.com/FluffyChi-Xing/AtomLowCode')
 
+/**
+ * 跳转到 github 仓库
+ */
+function jumpGithub() {
+  // 新窗口打开
+  window.open(githubLink.value);
+}
+/** ===== github 仓库链接初始化-end ===== **/
 </script>
 
 <template>
@@ -7,7 +18,7 @@
     <!-- site logo -->
     <span class="site-logo" />
     <!-- github logo -->
-    <span class="github-logo cursor-pointer" />
+    <span @click="jumpGithub" class="github-logo cursor-pointer" />
   </div>
 </template>
 

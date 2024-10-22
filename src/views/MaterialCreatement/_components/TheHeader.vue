@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from 'vue';
+import { useRouter } from "vue-router";
 
 const props = withDefaults(defineProps<{
   defaultActive?: string;
@@ -9,6 +10,7 @@ const props = withDefaults(defineProps<{
 
 
 
+const router = useRouter();
 const currentTab = ref<string>(props.defaultActive);
 interface tabTypes {
   label: string;
@@ -34,6 +36,10 @@ function checkActive() {
   currentTab.value = props.defaultActive;
 }
 
+function goBack() {
+  router.push('/')
+}
+
 onMounted(() => {
   checkActive();
 })
@@ -47,7 +53,7 @@ watch(() => props.defaultActive, () => {
   <div class="w-full h-full flex px-5 justify-start">
     <div class="w-1/2 h-full flex items-center">
       <!-- website logo -->
-      <span class="w-[100px] h-full flex object-contain site-logo" />
+      <span @click="goBack" class="w-[100px] h-full flex cursor-pointer object-contain site-logo" />
       <!-- tags banner -->
       <div
           style="width: calc(100% - 100px)"

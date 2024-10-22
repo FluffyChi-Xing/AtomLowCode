@@ -37,6 +37,7 @@ const tabOptions = ref<tabTypes[]>([
 ])
 
 const tableData = ref<MaterialCenterTypes.materialTableTypes[]>([])
+const currentData = ref<MaterialCenterTypes.materialTableTypes[]>([]); // 表数据分页
 watch(() => currentTab.value, (val: any) => {
   if (val !== 'myPages') {
     tableData.value = []
@@ -306,7 +307,12 @@ function handleDelete(item: string) {
         </div>
         <!-- pagination -->
         <div class="w-full h-10 flex justify-end items-center">
-          <el-pagination layout="prev, pager, next" background :total="50" />
+          <el-pagination
+              layout="prev, pager, next"
+              background
+              :total="tableData?.length"
+              page-size="10"
+          />
         </div>
       </div>
     </el-card>
