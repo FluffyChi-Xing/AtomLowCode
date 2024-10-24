@@ -16,7 +16,7 @@ import CreateDataSourceForm from "@/views/VisualEditor/_components/createDataSou
 import GenerateDialog from "@/components/GenerateDialog.vue";
 import SchemaPane from '@/views/VisualEditor/_components/SchemaPane/index.vue'
 import {$message} from "@/componsabels/Element-Plus";
-import {localKey} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
+import {getLocalData, insertNewPage, localKey} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
 import Preview from '@/views/VisualEditor/_components/preview/index.vue'
 
 
@@ -213,8 +213,23 @@ function deleteCancel() {
 
 /** ===== 新建页面-start ===== **/
 const createPage = ref<boolean>(false)
+const newPageName = ref<string>('');
+const newPagePath = ref<string>('');
+const currentPageName = ref<string>('');
+const currentPagePath = ref<string>('');
+
+
+
+function clearPath() {
+  newPagePath.value = ''
+}
+
+function clearPageName() {
+  newPageName.value = ''
+}
 function handleCreatePage() {
   createPage.value = true
+  getCurrentPage();
 }
 
 function createCancel() {
@@ -222,7 +237,59 @@ function createCancel() {
 }
 
 function confirmNewPage() {
-  createPage.value = false
+  if (newPageName.value && newPagePath.value) {
+    let pagePath = [];
+    const data = getLocalData();
+    if (data) {
+      data?.page?.forEach((item: any) => {
+        pagePath.push(item?.path)
+      })
+      pagePath.map((item: any) => {
+        if (item !== newPagePath.value) {
+          insertNewPage(newPageName.value, newPagePath.value);
+          createPage.value = false
+        } else {
+          $message({
+            type: 'warning',
+            message: '不可以输出重复路径',
+            offset: 80
+          })
+        }
+      })
+    }
+  } else {
+    $message({
+      type: 'warning',
+      message: '页面名称和页面路由不可为空',
+      offset: 80
+    })
+  }
+}
+
+
+/**
+ *  @description 当前页面数据初始化
+ * @param item
+ */
+function initCurrentPage(item: any) {
+  currentPageName.value = JSON.parse(item)?.page[0].title;
+  currentPagePath.value = JSON.parse(item)?.page[0].path;
+}
+
+
+/**
+ * @description 获取当前页面数据
+ */
+function getCurrentPage() {
+  const localData = sessionStorage.getItem(localKey);
+  if (localData) {
+    initCurrentPage(localData);
+  } else {
+    const data = JSON.stringify(initJson);
+    if (data) {
+      initCurrentPage(data);
+    }
+  }
 }
 /** ===== 新建页面-end ===== **/
 
@@ -417,7 +484,48 @@ function confirmPre() {
         @confirm="confirmNewPage"
     >
       <template #main>
-        <span class="text-red-500 font-bold">新建页面窗口</span>
+        <el-tabs type="border-card">
+          <el-tab-pane label="新建页面">
+            <el-form-item required label="页面名称">
+              <el-input
+                  v-model="newPageName"
+                  clearable
+                  prefix-icon="Notification"
+                  placeholder="请输入页面名称"
+                  @clear="clearPageName"
+                  class="w-full"
+              />
+            </el-form-item>
+            <el-form-item required label="页面路径">
+              <el-input
+                  v-model="newPagePath"
+                  clearable
+                  prefix-icon="Link"
+                  placeholder="请输入页面路径"
+                  class="w-full"
+                  @clear="clearPath"
+              />
+            </el-form-item>
+          </el-tab-pane>
+          <el-tab-pane label="当前页面">
+            <el-form-item required label="页面名称">
+              <el-input
+                  v-model="currentPageName"
+                  prefix-icon="Notification"
+                  disabled
+                  class="w-full"
+              />
+            </el-form-item>
+            <el-form-item required label="页面路径">
+              <el-input
+                  v-model="currentPagePath"
+                  prefix-icon="Link"
+                  disabled
+                  class="w-full"
+              />
+            </el-form-item>
+          </el-tab-pane>
+        </el-tabs>
       </template>
     </GenerateDialog>
     <!-- 组件预览弹框 -->

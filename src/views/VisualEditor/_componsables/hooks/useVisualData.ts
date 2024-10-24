@@ -5,6 +5,7 @@ import type {
 } from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
 import {SectionTypes} from "@/views/VisualEditor/_componsables/api/sectionTypes";
 import {$message} from "@/componsabels/Element-Plus";
+import * as path from "path";
 
 
 export const localKey = "PAGE_DATE_KEY"
@@ -449,7 +450,6 @@ export function saveProgress(item: any) {
 
 /**
  * @description 撤销进度
- * @param item
  */
 export function removeProgress() {
     // 存入暂存栈
@@ -515,6 +515,97 @@ export function syncSize(params: any) {
         $message({
             type: "error",
             message: '同步页面大小错误',
+            offset: 80
+        })
+    }
+}
+
+
+/**
+ * @description 获取session storage 存储的页面数据
+ */
+export function getLocalData() {
+    const localData = JSON.parse(sessionStorage.getItem(localKey) as string);
+    if (localData) {
+        return localData
+    } else {
+        const data = JSON.parse(JSON.stringify(initJson))
+        if (data) {
+            return data;
+        } else {
+            return null;
+        }
+    }
+}
+
+
+/**
+ * @description 插入新页面执行函数
+ * @param localData
+ * @param name
+ * @param path
+ */
+function handleNewPage(localData: any, name: string, path: string) {
+    if (name && path) {
+        try {
+            const newData = deepClone(localData);
+            const pageList = newData?.page;
+            pageList.push({
+                title: name,
+                path: path,
+                config: {},
+                size: {
+                    width: 1100,
+                    height: 'auto'
+                },
+                section: [
+                    {
+                        index: 1,
+                        label: 'section1',
+                        isShow: false,
+                        component: []
+                    }
+                ],
+                module: [],
+                action: {}
+            })
+            return newData;
+        } catch (e) {
+            $message({
+                type: "warning",
+                message: '页面创建错误',
+                offset: 80
+            })
+            console.log(e)
+        }
+    }
+}
+
+
+/**
+ * @description 插入新页面
+ * @param name 页面名称
+ * @param path 页面路径
+ */
+export function insertNewPage(name: string, path: string) {
+    const localData = JSON.parse(sessionStorage.getItem(localKey) as string);
+    // 如果存在 session storage
+    if (localData) {
+        const newData = handleNewPage(localData, name, path);
+        setSessionStorage(localKey, newData);
+        $message({
+            type: "success",
+            message: '创建成功',
+            offset: 80
+        })
+    } else {
+        // 如=如果不存在 session storage
+        const data = JSON.parse(JSON.stringify(initJson));
+        const newData = handleNewPage(data, name, path);
+        setSessionStorage(localKey, newData);
+        $message({
+            type: "success",
+            message: '创建成功',
             offset: 80
         })
     }
