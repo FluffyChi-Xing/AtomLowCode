@@ -34,6 +34,10 @@ export default {
         }
     ],
     props: {
+        show: createEditorInputProp({
+            label: '是否上架',
+            defaultValue: true,
+        }),
         text: createEditorInputProp({ label: '按钮文字', defaultValue: '按钮'}),
         type: createEditorSelectProp({
             label: '按钮类型',

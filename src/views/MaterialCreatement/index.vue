@@ -90,7 +90,7 @@ function jumpGithub() {
     <!-- right -->
     <div class="w-10 h-full flex flex-col shadow-md bg-white py-10">
       <!-- github link -->
-      <div class="w-10 h-10 flex mt-auto">
+      <div class="w-10 h-10 flex">
         <el-tooltip
             content="github"
             effect="dark"

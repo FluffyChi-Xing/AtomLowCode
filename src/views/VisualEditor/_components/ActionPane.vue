@@ -3,7 +3,14 @@ import {onMounted, ref, watch} from 'vue';
 import type {VisualEditorTypes} from "@/views/VisualEditor/_componsables/api/visualEditorTypes";
 import {Cellphone, Iphone, Monitor, RefreshLeft, RefreshRight} from "@element-plus/icons-vue";
 import {$message} from "@/componsabels/Element-Plus";
-import {localKey, syncSize} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
+import {
+  localKey,
+  proStack, redoProcess,
+  removeProgress,
+  stagingStack,
+  syncSize
+} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
+import {visualConfig} from "@/componsabels/visual-config";
 
 
 
@@ -173,7 +180,11 @@ function previewPage() {
             content="撤销"
             placement="bottom"
         >
-          <el-button class="mr-1">
+          <el-button
+              class="mr-1"
+              :disabled="proStack.isEmpty()"
+              @click="removeProgress()"
+          >
             <el-icon><RefreshLeft /></el-icon>
           </el-button>
         </el-tooltip>
@@ -182,7 +193,10 @@ function previewPage() {
             content="恢复"
             placement="bottom"
         >
-          <el-button>
+          <el-button
+              :disabled="stagingStack.isEmpty()"
+              @click="redoProcess()"
+          >
             <el-icon><RefreshRight /></el-icon>
           </el-button>
         </el-tooltip>

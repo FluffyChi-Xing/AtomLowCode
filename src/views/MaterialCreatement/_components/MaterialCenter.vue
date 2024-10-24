@@ -324,7 +324,14 @@ function handleDelete(item: string) {
                  <el-button @click="handlePreview(row.index - 1)" type="text" size="small" class="mr-2">
                    {{ currentTab === 'myPages' ? '预览页面' : '预览组件' }}
                  </el-button>
-                 <el-button @click="handleDelete(row.label)" type="text" size="small">删除</el-button>
+                 <el-button
+                     v-if="currentTab !== 'myComps'"
+                     @click="handleDelete(row.label)"
+                     type="text"
+                     size="small"
+                 >
+                   删除
+                 </el-button>
                </div>
              </template>
             </el-table-column>

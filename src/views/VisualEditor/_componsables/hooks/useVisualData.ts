@@ -250,9 +250,9 @@ function handleCreateComp(localData: any, comp: any) {
         // 获取当前的 section list
         const currentSection = newData.page[0].section.find((item: any) => item?.label === comp?.sectionLabel);
         try {
-            currentSection.component?.push(comp?.comp);
             // 保存到操作栈
             saveProgress(comp?.comp);
+            currentSection.component?.push(comp?.comp);
         } catch (e) {
             console.log('插入组件错误', e);
             $message({
@@ -285,6 +285,13 @@ export function insertComponent(comp: SectionTypes.createComp) {
 }
 
 
+/**
+ * @description 删除组件执行函数
+ * @param localData
+ * @param comp
+ * @param index
+ * @param label
+ */
 function handleDeleteComp(localData: any, comp: any, index: number, label: string) {
     if (comp) {
         const currentSection = localData.page[0].section.find((item: any) => item?.label === label);
@@ -390,6 +397,9 @@ export function persistentSectionList() {
 }
 
 
+/** ========== 操作进度栈-start ========== */
+
+
 /**
  * @description 操作栈
  */
@@ -425,24 +435,43 @@ class progressStack {
 /**
  * @description 进度栈
  */
-const proStack = new progressStack();
+export const proStack = new progressStack(); // 进度栈
+
+export const stagingStack = new progressStack(); // 暂存栈
 /**
  * @description 保存进度
  * @param item
  */
-function saveProgress(item: any) {
+export function saveProgress(item: any) {
     proStack.push(item);
-    console.log('进度栈', proStack);
+    console.log('保存进度到进度栈');
 }
 
 /**
  * @description 撤销进度
  * @param item
  */
-function removeProgress(item: any) {
-    proStack.pop();
-    console.log('进度栈', proStack);
+export function removeProgress() {
+    // 存入暂存栈
+    stagingStack.push(proStack.getTop());
+    proStack.pop(); // 出栈
+    console.log('撤销进度，存入暂存栈', proStack);
 }
+
+
+/**
+ * @description 恢复进度
+ */
+export function redoProcess() {
+    // 存入进度栈
+    proStack.push(stagingStack.getTop());
+    // 暂存栈出栈
+    stagingStack.pop();
+    console.log('恢复进度，存入进度栈', proStack);
+}
+
+
+/** ========== 操作进度栈-end ========== */
 
 
 /**
