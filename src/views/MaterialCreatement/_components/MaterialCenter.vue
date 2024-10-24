@@ -10,8 +10,10 @@ import initJson from "@/init.json";
 import {visualConfig} from "@/componsabels/visual-config";
 
 const currentTab = ref<string>('myPages');
-const isPreview = ref<boolean>(false)
-const previewSize = ref<number>(1100)
+const isPreview = ref<boolean>(false);
+const previewSize = ref<number>(1100);
+const isLoading = ref<boolean>(false);
+const pageSize = 10;
 const router = useRouter();
 interface tabTypes {
   label: string;
@@ -39,11 +41,19 @@ const tabOptions = ref<tabTypes[]>([
 const tableData = ref<MaterialCenterTypes.materialTableTypes[]>([])
 const currentData = ref<MaterialCenterTypes.materialTableTypes[]>([]); // 表数据分页
 watch(() => currentTab.value, (val: any) => {
+  console.log(val)
   if (val !== 'myPages') {
     tableData.value = []
-    // getPageOrComp()
-  } else {
+    currentData.value = []
+    isLoading.value = true
     getPageOrComp()
+    isLoading.value = false
+  } else {
+    tableData.value = []
+    currentData.value = []
+    isLoading.value = true
+    getPageOrComp()
+    isLoading.value = false
   }
 })
 /** ===== 新建组件弹框初始化-start ===== **/
@@ -98,6 +108,7 @@ function createComp(name: string, label: string) {
 function getPageOrComp() {
   // 获取页面
   if (currentTab.value === 'myPages') {
+    console.log('获取页面')
     const sessionData = sessionStorage.getItem(localKey) as string
     if (sessionData) {
       const session = JSON.parse(sessionData)
@@ -111,12 +122,12 @@ function getPageOrComp() {
             label: item?.title
           })
         })
+        currentData.value = tableData.value.slice(0, pageSize)
       }
     }
   }
   // 获取组件
   if (currentTab.value === 'myComps') {
-    console.log('全部组件')
     Object.entries(visualConfig.componentMap)?.forEach(([key, module]) => {
       tableData.value?.push({
         index: tableData.value?.length + 1,
@@ -125,6 +136,7 @@ function getPageOrComp() {
         type: '低代码组件',
         label: module?.label
       })
+      currentData.value = tableData.value.slice(0, pageSize)
     })
   }
 }
@@ -135,6 +147,23 @@ function createComponent(row: any, tab: string) {
   } else {
     router.push(`/atom/materialCreate/workspace${row.name}&${row.label}`)
   }
+}
+
+
+/**
+ * 分页函数
+ * @param index
+ */
+async function executePageChange(index: number) {
+  currentData.value = []
+  currentData.value = tableData.value.slice(index * pageSize, (index + 1) * pageSize)
+}
+
+
+async function handlePageChange(index: number) {
+  isLoading.value = true
+  await executePageChange(index - 1)
+  isLoading.value = false
 }
 
 onMounted(() => {
@@ -242,10 +271,11 @@ function handleDelete(item: string) {
             class="w-full flex flex-col"
         >
           <el-table
-              :data="tableData"
+              :data="currentData"
               stripe
               highlight-current-row
               fit
+              :load="isLoading"
               :header-cell-style="{background: '#f5f7fa', color: '#909399'}"
           >
             <el-table-column
@@ -310,8 +340,10 @@ function handleDelete(item: string) {
           <el-pagination
               layout="prev, pager, next"
               background
+              hide-on-single-page
               :total="tableData?.length"
-              page-size="10"
+              :page-size="pageSize"
+              @current-change="handlePageChange"
           />
         </div>
       </div>
