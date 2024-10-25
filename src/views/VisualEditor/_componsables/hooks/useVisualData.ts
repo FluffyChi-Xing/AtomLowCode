@@ -553,7 +553,9 @@ function handleNewPage(localData: any, name: string, path: string) {
             pageList.push({
                 title: name,
                 path: path,
-                config: {},
+                config: {
+                    home: false
+                },
                 size: {
                     width: 1100,
                     height: 'auto'
@@ -608,5 +610,50 @@ export function insertNewPage(name: string, path: string) {
             message: '创建成功',
             offset: 80
         })
+    }
+}
+
+
+/**
+ * @description 切换主页执行函数
+ * @param localData
+ * @param path
+ */
+function handleChangeHome(localData: any, path: any) {
+    const newData = deepClone(localData);
+    if (path) {
+        try {
+            const pageList = newData?.page;
+            pageList?.forEach((item: any) => {
+                item.config.home = item?.path === path;
+            })
+            return newData;
+        } catch (e) {
+            $message({
+                type: "error",
+                message: "内部错误",
+                offset: 80
+            })
+            return newData;
+        }
+    }
+}
+
+
+/**
+ * @description 切换主页函数
+ * @param path
+ */
+export function changeHomePage(path: any) {
+    const localData = JSON.parse(sessionStorage.getItem(localKey) as string);
+    // 如果存在 session storage
+    if (localData) {
+        const newData = handleChangeHome(localData, path);
+        setSessionStorage(localKey, newData);
+    } else {
+        // 如果不存在 session storage
+        const data = JSON.parse(JSON.stringify(initJson));
+        const newData = handleChangeHome(data, path);
+        setSessionStorage(localKey, newData);
     }
 }

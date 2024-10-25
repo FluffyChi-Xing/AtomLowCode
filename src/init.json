@@ -3,7 +3,9 @@
     {
       "title": "首页",
       "path": "/",
-      "config": {},
+      "config": {
+        "home": true
+      },
       "size": {
         "width": 1100,
         "height": "auto"

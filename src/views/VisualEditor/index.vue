@@ -16,7 +16,12 @@ import CreateDataSourceForm from "@/views/VisualEditor/_components/createDataSou
 import GenerateDialog from "@/components/GenerateDialog.vue";
 import SchemaPane from '@/views/VisualEditor/_components/SchemaPane/index.vue'
 import {$message} from "@/componsabels/Element-Plus";
-import {getLocalData, insertNewPage, localKey} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
+import {
+  changeHomePage,
+  getLocalData,
+  insertNewPage,
+  localKey
+} from "@/views/VisualEditor/_componsables/hooks/useVisualData";
 import Preview from '@/views/VisualEditor/_components/preview/index.vue'
 
 
@@ -217,6 +222,8 @@ const newPageName = ref<string>('');
 const newPagePath = ref<string>('');
 const currentPageName = ref<string>('');
 const currentPagePath = ref<string>('');
+const selectPage = ref<any[]>([]) // 可选页面列表
+const currentTab = ref<string>('new')
 
 
 
@@ -237,32 +244,36 @@ function createCancel() {
 }
 
 function confirmNewPage() {
-  if (newPageName.value && newPagePath.value) {
-    let pagePath = [];
-    const data = getLocalData();
-    if (data) {
-      data?.page?.forEach((item: any) => {
-        pagePath.push(item?.path)
-      })
-      pagePath.map((item: any) => {
-        if (item !== newPagePath.value) {
-          insertNewPage(newPageName.value, newPagePath.value);
-          createPage.value = false
-        } else {
-          $message({
-            type: 'warning',
-            message: '不可以输出重复路径',
-            offset: 80
-          })
-        }
+  if (currentTab.value === 'new') {
+    if (newPageName.value && newPagePath.value) {
+      let pagePath = [];
+      const data = getLocalData();
+      if (data) {
+        data?.page?.forEach((item: any) => {
+          pagePath.push(item?.path)
+        })
+        pagePath.map((item: any) => {
+          if (item !== newPagePath.value) {
+            insertNewPage(newPageName.value, newPagePath.value);
+            createPage.value = false
+          } else {
+            $message({
+              type: 'warning',
+              message: '不可以输出重复路径',
+              offset: 80
+            })
+          }
+        })
+      }
+    } else {
+      $message({
+        type: 'warning',
+        message: '页面名称和页面路由不可为空',
+        offset: 80
       })
     }
   } else {
-    $message({
-      type: 'warning',
-      message: '页面名称和页面路由不可为空',
-      offset: 80
-    })
+    createPage.value = false
   }
 }
 
@@ -272,8 +283,20 @@ function confirmNewPage() {
  * @param item
  */
 function initCurrentPage(item: any) {
-  currentPageName.value = JSON.parse(item)?.page[0].title;
-  currentPagePath.value = JSON.parse(item)?.page[0].path;
+  // currentPageName.value = JSON.parse(item)?.page[0].title;
+  // currentPagePath.value = JSON.parse(item)?.page[0].path;
+  selectPage.value = []
+  JSON.parse(item)?.page.forEach((item: any) => {
+    if (item?.config?.home) {
+      currentPageName.value = item?.title;
+      currentPagePath.value = item?.path;
+    }
+    // 可选列表初始化
+    selectPage.value.push({
+      title: item?.title,
+      path: item?.path
+    })
+  })
 }
 
 
@@ -289,6 +312,14 @@ function getCurrentPage() {
     if (data) {
       initCurrentPage(data);
     }
+  }
+}
+
+
+function changeCurrentPage(item: any) {
+  if (item) {
+    currentPageName.value = selectPage.value.find((index: any) => index.path === item)?.title;
+    changeHomePage(item);
   }
 }
 /** ===== 新建页面-end ===== **/
@@ -484,8 +515,11 @@ function confirmPre() {
         @confirm="confirmNewPage"
     >
       <template #main>
-        <el-tabs type="border-card">
-          <el-tab-pane label="新建页面">
+        <el-tabs
+            v-model="currentTab"
+            type="border-card"
+        >
+          <el-tab-pane name="new" label="新建页面">
             <el-form-item required label="页面名称">
               <el-input
                   v-model="newPageName"
@@ -507,7 +541,7 @@ function confirmPre() {
               />
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="当前页面">
+          <el-tab-pane name="change" label="当前页面">
             <el-form-item required label="页面名称">
               <el-input
                   v-model="currentPageName"
@@ -523,6 +557,21 @@ function confirmPre() {
                   disabled
                   class="w-full"
               />
+            </el-form-item>
+            <el-form-item label="选择当前页">
+              <el-select
+                  v-model="currentPagePath"
+                  placement="bottom"
+                  placeholder="请选择当前页"
+                  @change="changeCurrentPage"
+              >
+                <el-option
+                    v-for="(item, index) in selectPage"
+                    :key="index"
+                    :label="item.title"
+                    :value="item.path"
+                />
+              </el-select>
             </el-form-item>
           </el-tab-pane>
         </el-tabs>
