@@ -32,6 +32,7 @@ const emits = defineEmits(['deleteEvent'])
 const currentPane = ref<any>(checkPane(highLightTab.value))
 const paneBindData = ref<any>(props.currentNode)
 const currentNode = ref<any>(props.currentNode)
+const currentPage = ref<string>(props.currentPage);
 const attriTabList = ref<attributeTabTypes[]>([
   {
     index: 1,
@@ -89,7 +90,8 @@ watch(() => highLightTab.value, (val) => {
 })
 
 watch(() => props.currentNode, () => {
-  currentNode.value = props.currentNode
+  currentNode.value = props.currentNode;
+  currentPage.value = props.currentPage;
   initPaneData()
 })
 

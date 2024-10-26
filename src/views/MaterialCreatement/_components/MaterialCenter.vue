@@ -407,7 +407,7 @@ function handleDelete(item: string) {
     <!-- 组件预览弹框 -->
     <GenerateDialog
         v-model:visible="isPreview"
-        title="组件预览"
+        :title="currentTab === 'myPages' ? '页面预览' : '组件预览'"
         :destroy="true"
         :width="previewSize"
         :draggable="true"

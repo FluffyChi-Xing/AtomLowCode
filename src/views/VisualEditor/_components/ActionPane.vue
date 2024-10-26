@@ -10,7 +10,6 @@ import {
   stagingStack,
   syncSize
 } from "@/views/VisualEditor/_componsables/hooks/useVisualData";
-import {visualConfig} from "@/componsabels/visual-config";
 
 
 
@@ -71,8 +70,9 @@ function checkSize() {
   // 如果本地存储有数据
   // console.log('localData', localData)
   if (localData) {
-    const size = localData.page[0]?.size;
+    const size = localData.page.find(item => item?.config?.home === true)?.size;
     device2string(size?.width)
+    emits('sizeChange', sizeNumber.value)
     // 如果本地存储没有数据
   } else {
     reactSize.value = 'pc'

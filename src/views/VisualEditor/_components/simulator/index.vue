@@ -6,7 +6,7 @@ import type {SectionTypes} from "@/views/VisualEditor/_componsables/api/sectionT
 import {$message, $notify} from "@/componsabels/Element-Plus";
 import type {VisualEditorComponent} from "@/views/VisualEditor/_componsables/utils/visual-editor-utils";
 import {
-  deleteSection,
+  deleteSection, getLocalData,
   insertComponent,
   insertSection, localKey,
   persistentSectionList
@@ -19,8 +19,10 @@ defineOptions({
 
 const props = withDefaults(defineProps<{
   clearAll?: boolean;
+  changeHome?: boolean;
 }>(), {
-  clearAll: false
+  clearAll: false,
+  changeHome: false
 })
 
 const simulator = ref() // 获取模拟器容器
@@ -123,12 +125,17 @@ function syncSectionList() {
 }
 
 
+
+function setPageData() {
+  sectionList.value.splice(0, sectionList.value.length - 1)
+  sectionList.value[0].component = []
+}
+
 /**
  * 页面重置
  */
 function handleClearAll() {
-  sectionList.value.splice(0, sectionList.value.length - 1)
-  sectionList.value[0].component = []
+  setPageData();
   // 同步处理 session storage 中的数据为 initJson
   sessionStorage.setItem(localKey, JSON.stringify(initJson))
   $message({
@@ -165,6 +172,41 @@ onMounted(() => {
   pageInit();
 })
 /** ===== 页面刷新重新渲染-end ===== **/
+
+/** ===== 主页切换重新渲染-start ===== **/
+
+
+function handleHomeChange(list: any[]) {
+  try {
+    const section = list?.find(item => item.config?.home === true)?.section;
+    if (section?.length) {
+      setPageData(); // 清空当前页面数据
+      sectionList.value = section; // 重新渲染主页
+      $message({
+        type: "success",
+        message: "主页切换成功",
+        offset: 80
+      })
+    }
+  } catch (e) {
+    $message({
+      type: "error",
+      message: "主页切换错误",
+      offset: 80
+    })
+  }
+}
+function HomeChange() {
+  const page = getLocalData()?.page;
+  if (page?.length) {
+    handleHomeChange(page);
+  }
+}
+
+watch(() => props.changeHome, () => {
+  HomeChange();
+})
+/** ===== 主页切换重新渲染-end ===== **/
 </script>
 
 <template>

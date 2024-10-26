@@ -74,7 +74,8 @@ function initChoice(index: string) {
 
 function checkSize() {
   const localData = JSON.parse(sessionStorage.getItem(localKey) as string || JSON.stringify(initJson))
-  const size = localData.page[0]?.size
+  const pageList = localData?.page;
+  const size = pageList.find(item => item?.config.home === true)?.size;
   if (size) {
     canvasSize.value = size?.width // 记录中的画布宽度
   } else {
@@ -199,6 +200,7 @@ const isReset = ref<boolean>(false)
 function handleReset() {
   isReset.value = !isReset.value
   canvasSize.value = 1100
+  initCurrentPageName();
 }
 /** ===== 页面重置-end ===== **/
 
@@ -224,6 +226,7 @@ const currentPageName = ref<string>('');
 const currentPagePath = ref<string>('');
 const selectPage = ref<any[]>([]) // 可选页面列表
 const currentTab = ref<string>('new')
+const changeTag = ref<boolean>(false); // 切换主页标记
 
 
 
@@ -256,6 +259,9 @@ function confirmNewPage() {
           if (item !== newPagePath.value) {
             insertNewPage(newPageName.value, newPagePath.value);
             createPage.value = false
+            // 清空输入框数据
+            newPageName.value = '';
+            newPagePath.value = '';
           } else {
             $message({
               type: 'warning',
@@ -283,8 +289,6 @@ function confirmNewPage() {
  * @param item
  */
 function initCurrentPage(item: any) {
-  // currentPageName.value = JSON.parse(item)?.page[0].title;
-  // currentPagePath.value = JSON.parse(item)?.page[0].path;
   selectPage.value = []
   JSON.parse(item)?.page.forEach((item: any) => {
     if (item?.config?.home) {
@@ -319,7 +323,8 @@ function getCurrentPage() {
 function changeCurrentPage(item: any) {
   if (item) {
     currentPageName.value = selectPage.value.find((index: any) => index.path === item)?.title;
-    changeHomePage(item);
+    changeHomePage(item); // 将 page[index] 的 config 属性的 home 设置为 true
+    changeTag.value = !changeTag.value
   }
 }
 /** ===== 新建页面-end ===== **/
@@ -336,7 +341,8 @@ function handlePreview() {
 
 function checkPreSize() {
   const localData = JSON.parse(sessionStorage.getItem(localKey) as string || JSON.stringify(initJson))
-  const size = localData.page[0]?.size
+  const pageList = localData.page;
+  const size = pageList.find(item => item?.config?.home === true)?.size;
   if (size) {
     // console.log('size', size)
     previewSize.value = size?.width
@@ -352,6 +358,21 @@ function cancelPre() {
 function confirmPre() {
   isPreview.value = false
 }
+
+function initCurrentPageName() {
+  const pageList = JSON.parse(sessionStorage.getItem(localKey) as string).page;
+  // 清空当前页面名称
+  currentPageName.value = ''
+  if (pageList?.length) {
+    const page = pageList.find(item => item?.config?.home === true);
+    currentPageName.value = page?.title;
+    console.log('执行主页面名称初始化', currentPageName.value)
+  }
+}
+
+onMounted(() => {
+  initCurrentPageName();
+})
 /** ===== 组件预览-end ===== **/
 </script>
 
@@ -392,6 +413,7 @@ function confirmPre() {
         >
           <Simulator
               :clear-all="isReset"
+              :change-home="changeTag"
               @focus-comp="checkCurrentNode"
               @currentSec="getCurrentSec"
               @upload-section="syncSectionList"
@@ -404,6 +426,7 @@ function confirmPre() {
             :is-reset="isReset"
             :current-node="currentNode"
             :current-sec="currentSection"
+            :current-page="currentPageName"
             @delete-event="handleDeleteEvent"
         />
       </div>
@@ -580,7 +603,7 @@ function confirmPre() {
     <!-- 组件预览弹框 -->
     <GenerateDialog
         v-model:visible="isPreview"
-        title="组件预览"
+        :title="`${currentPageName} 组件预览`"
         :destroy="true"
         :width="previewSize"
         :draggable="true"

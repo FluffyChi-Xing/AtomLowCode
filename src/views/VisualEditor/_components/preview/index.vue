@@ -19,10 +19,15 @@ const localData = ref<any>();
 const previewComp = ref<any>(props.preComp); // 组件预览传值
 
 
-function getLocalData() {
-  // 清空localData
+function resetData() {
   localData.value = null;
   previewComp.value = props.preComp || null;
+}
+
+
+function getLocalData() {
+  // 清空localData
+  resetData();
   const pageData = JSON.parse(sessionStorage.getItem(localKey) as string);
   // 如果sessionStorage中有数据
   try {
@@ -37,7 +42,8 @@ function getLocalData() {
         })
       } else {
         // 正常情况下页面预览时的组件渲染逻辑
-        localData.value = pageData.page[0];
+        const pageList = pageData.page;
+        localData.value = pageList.find(item => item?.config?.home === true);
       }
     } else {
       // 如果sessionStorage中没有数据

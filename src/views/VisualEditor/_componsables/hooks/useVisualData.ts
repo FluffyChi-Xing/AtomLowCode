@@ -239,6 +239,16 @@ export function deleteSection(section: any) {
 }
 
 
+function getHomePage(localData: any) {
+    try {
+        const pageList = localData?.page;
+        return pageList?.find(item => item?.config?.home === true);
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+
 /**
  * @description 创建组件执行函数
  * @param localData
@@ -248,8 +258,10 @@ function handleCreateComp(localData: any, comp: any) {
     if (comp !== null && comp !== undefined) {
         // 深拷贝 localData
         const newData = deepClone(localData);
+        // 获取主页面
+        const currentPage = getHomePage(newData);
         // 获取当前的 section list
-        const currentSection = newData.page[0].section.find((item: any) => item?.label === comp?.sectionLabel);
+        const currentSection = currentPage.section.find((item: any) => item?.label === comp?.sectionLabel);
         try {
             // 保存到操作栈
             saveProgress(comp?.comp);
@@ -295,7 +307,9 @@ export function insertComponent(comp: SectionTypes.createComp) {
  */
 function handleDeleteComp(localData: any, comp: any, index: number, label: string) {
     if (comp) {
-        const currentSection = localData.page[0].section.find((item: any) => item?.label === label);
+        const pageList = localData.page;
+        const currentPage = pageList.find(item => item?.config?.home === true);
+        const currentSection = currentPage.section.find((item: any) => item?.label === label);
         let currentComp = [];
         currentComp = currentSection?.component;
         if (index !== -1) { // 检查index是否不等于-1
@@ -393,7 +407,9 @@ export function updateComponent(section: string, uuid: any, params: any) {
 export function persistentSectionList() {
     const sessionData = JSON.parse(sessionStorage.getItem(localKey) as string);
     if (sessionData) {
-        return sessionData.page[0].section;
+        // 确定主页面位置
+        const pageList = sessionData?.page;
+        return pageList.find(item => item?.config?.home === true)?.section;
     }
 }
 
@@ -481,15 +497,14 @@ export function redoProcess() {
  */
 function handleChangeSize(localData: any, params: any) {
     const newData = deepClone(localData);
-    if (params) {
-        newData.page[0].size = {
-            ...params
-        };
-    } else {
-        newData.page[0].size = {
-            width: 1100,
-            height: 'auto'
-        }
+    const pageList = newData?.page;
+    const pageSize = pageList.find(item => item?.config?.home === true)?.size;
+    if (pageSize) {
+        pageSize.width = params.width;
+        pageSize.height = params.height;
+    } else if (pageList[0]?.size) {
+        pageList[0].size.width = 1100;
+        pageList[0].size.height = 'auto';
     }
     return newData;
 }
